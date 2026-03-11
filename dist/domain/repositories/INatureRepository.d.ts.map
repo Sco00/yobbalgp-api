@@ -1,0 +1,1 @@
+{"version":3,"file":"INatureRepository.d.ts","sourceRoot":"","sources":["../../../src/domain/repositories/INatureRepository.ts"],"names":[],"mappings":"AAAA,OAAO,EAAG,MAAM,EAAE,MAAM,gBAAgB,CAAA;AAExC,MAAM,WAAW,iBAAiB;IAChC,QAAQ,CAAC,EAAE,EAAE,MAAM,GAAG,OAAO,CAAC,MAAM,GAAG,IAAI,CAAC,CAAA;CAC7C"}

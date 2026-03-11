@@ -1,0 +1,35 @@
+import { CreatePackageUseCase } from '../../application/package/CreatePackageUseCase.js';
+import { ListPackagesUseCase } from '../../application/package/ListPackagesUseCase.js';
+import { GetPackageByIdUseCase } from '../../application/package/GetPackageByIdUseCase.js';
+import { UpdatePackageStatusUseCase } from '../../application/package/UpdatePackageStatusUseCase.js';
+import { ArchivePackageUseCase } from '../../application/package/ArchivePackageUseCase.js';
+import { DeletePackageUseCase } from '../../application/package/DeletePackageUseCase.js';
+import { PackageController } from '../http/controllers/PackageController.js';
+import { CreatePersonUseCase } from '../../application/person/CreatePersonUseCase.js';
+import { CreateAccountUseCase } from '../../application/account/CreateAccountUseCase.js';
+import { LoginUseCase } from '../../application/account/LoginUseCase.js';
+import { ListPersonsUseCase } from '../../application/person/ListPersonsUseCase.js';
+import { CreateDepartureUseCase } from '../../application/departure/CreateDepartureUseCase.js';
+import { ListDeparturesUseCase } from '../../application/departure/ListDeparturesUseCase.js';
+import { GetDepartureByIdUseCase } from '../../application/departure/GetDepartureByIdUseCase.js';
+import { CloseDepartureUseCase } from '../../application/departure/CloseDepartureUseCase.js';
+import { DepartureController } from '../http/controllers/DepartureController.js';
+export declare const container: {
+    createPackageUseCase: CreatePackageUseCase;
+    listPackagesUseCase: ListPackagesUseCase;
+    getPackageByIdUseCase: GetPackageByIdUseCase;
+    updatePackageStatusUseCase: UpdatePackageStatusUseCase;
+    archivePackageUseCase: ArchivePackageUseCase;
+    deletePackageUseCase: DeletePackageUseCase;
+    createPersonUseCase: CreatePersonUseCase;
+    createAccountUseCase: CreateAccountUseCase;
+    loginUseCase: LoginUseCase;
+    listPersonsUseCase: ListPersonsUseCase;
+    createDepartureUseCase: CreateDepartureUseCase;
+    listDeparturesUseCase: ListDeparturesUseCase;
+    getDepartureByIdUseCase: GetDepartureByIdUseCase;
+    closeDepartureUseCase: CloseDepartureUseCase;
+    packageController: PackageController;
+    departureController: DepartureController;
+};
+//# sourceMappingURL=container.d.ts.map

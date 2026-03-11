@@ -1,0 +1,304 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// ─────────────────────────────────────────────────────────────────────────────
+// YobbalGP V2 — Schema Prisma
+// PostgreSQL
+// ─────────────────────────────────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+// ─── ENUMS ───────────────────────────────────────────────────────────────────
+
+enum PackageState {
+  EN_ATTENTE
+  EN_TRANSIT
+  ARRIVE
+  LIVRE
+  RETOURNE
+}
+
+enum AddressType {
+  SIMPLE
+  RELAIS
+}
+
+enum Frequency {
+  HEBDOMADAIRE
+  BIMENSUEL
+  MENSUEL
+  TRIMESTRIEL
+  OCCASIONNEL
+}
+
+// ─── UTILISATEURS ────────────────────────────────────────────────────────────
+
+model PersonType {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  remise    Float    @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  persons Person[]
+
+  @@map("person_types")
+}
+
+model Person {
+  id           String   @id @default(uuid())
+  firstName    String   @map("first_name")
+  lastName     String   @map("last_name")
+  mobile       String
+  personTypeId String   @map("person_type_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  personType    PersonType     @relation(fields: [personTypeId], references: [id])
+  account       Account?
+  packages      Package[]      @relation("PackageOwner")
+  createdPackages Package[]    @relation("PackageCreator")
+  departureGpsOwned   DepartureGp[] @relation("DepartureGpOwner")
+  departureGpsCreated DepartureGp[] @relation("DepartureGpCreator")
+  routePartners RoutePartner[]
+  relays        Relay[]
+
+  @@map("persons")
+}
+
+model Role {
+  id   String   @id @default(uuid())
+  name String @unique
+
+  accounts Account[]
+
+  @@map("roles")
+}
+
+model Account {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  personId  String   @unique @map("person_id")
+  roleId    String   @map("role_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  person   Person  @relation(fields: [personId], references: [id])
+  role     Role    @relation(fields: [roleId], references: [id])
+
+  @@map("accounts")
+}
+
+// ─── ADRESSES ────────────────────────────────────────────────────────────────
+
+model Address {
+  id          String      @id @default(uuid())
+  country     String
+  region      String
+  city        String
+  locality    String?
+  type        AddressType
+  latitude    Float?
+  longitude   Float?
+  addressHash String      @unique @map("address_hash")
+  createdAt   DateTime    @default(now()) @map("created_at")
+
+  departureGpsDepartures  DepartureGp[] @relation("DepartureAddress")
+  departureGpsDestinations DepartureGp[] @relation("DestinationAddress")
+  routePartnerDepartures  RoutePartner[] @relation("RoutePartnerDeparture")
+  routePartnerDestinations RoutePartner[] @relation("RoutePartnerDestination")
+  relays                  Relay[]
+
+  @@map("addresses")
+}
+
+// ─── Package ───────────────────────────────────────────────────────────────────
+
+model Nature {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  unitPrice Float    @map("unit_price")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  packageNatures PackageNature[]
+
+  @@map("natures")
+}
+
+model Package {
+  id            String   @id @default(uuid())
+  reference     String      @unique
+  weight        Float
+  isCompleted   Boolean  @default(false) @map("is_completed")
+  isArchived    Boolean  @default(false) @map("is_archived")
+  creatorId     String   @map("creator_id")
+  personId      String   @map("person_id")
+  relayId       String?  @map("relay_id")
+  departureGpId String   @map("departure_gp_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  creator     Person      @relation("PackageCreator", fields: [creatorId], references: [id])
+  person      Person      @relation("PackageOwner", fields: [personId], references: [id])
+  relay       Relay?      @relation(fields: [relayId], references: [id])
+  departureGp DepartureGp @relation(fields: [departureGpId], references: [id])
+
+  natures  PackageNature[]
+  statuses PackageStatus[]
+  payments Payment[]
+
+  @@map("packages")
+}
+
+model PackageNature {
+  id        String   @id @default(uuid())
+  packageId String   @map("package_id")
+  natureId  String   @map("nature_id")
+  quantity  Float
+  price     Float
+  createdAt DateTime @default(now()) @map("created_at")
+
+  package Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  nature  Nature  @relation(fields: [natureId], references: [id])
+
+  @@map("package_natures")
+}
+
+model PackageStatus {
+  id        String     @id @default(uuid())
+  packageId String     @map("package_id")
+  state     PackageState @default(EN_ATTENTE)
+  createdAt DateTime   @default(now()) @map("created_at")
+
+  package Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+  @@map("package_statuses")
+}
+
+// ─── DÉPARTS GP ──────────────────────────────────────────────────────────────
+
+model DepartureGp {
+  id                   String    @id @default(uuid())
+  departureDate        DateTime  @map("departure_date")
+  deadline             DateTime
+  arrivalDate          DateTime? @map("arrival_date")
+  price                Float
+  priceGp              Float     @map("price_gp")
+  currencyId           String    @map("currency_id")
+  departureAddressId   String    @map("departure_address_id")
+  destinationAddressId String    @map("destination_address_id")
+  personId             String?    @map("person_id")
+  creatorId            String    @map("creator_id")
+  insurancePrice       Float?    @map("insurance_price")
+  isClosed             Boolean   @default(false) @map("is_closed")
+  createdAt            DateTime  @default(now()) @map("created_at")
+
+  currency            Currency @relation(fields: [currencyId], references: [id])
+  departureAddress    Address  @relation("DepartureAddress", fields: [departureAddressId], references: [id])
+  destinationAddress  Address  @relation("DestinationAddress", fields: [destinationAddressId], references: [id])
+  person              Person?   @relation("DepartureGpOwner", fields: [personId], references: [id])
+  creator             Person   @relation("DepartureGpCreator", fields: [creatorId], references: [id])
+
+  packages Package[]
+
+  @@map("departure_gps")
+}
+
+model RoutePartner {
+  id                   String   @id @default(uuid())
+  personId             String   @map("person_id")
+  departureAddressId   String   @map("departure_address_id")
+  destinationAddressId String   @map("destination_address_id")
+  frequency            Frequency
+  frequencyNote String?    @map("frequency_note")
+  createdAt            DateTime @default(now()) @map("created_at")
+
+  person              Person  @relation(fields: [personId], references: [id])
+  departureAddress    Address @relation("RoutePartnerDeparture", fields: [departureAddressId], references: [id])
+  destinationAddress  Address @relation("RoutePartnerDestination", fields: [destinationAddressId], references: [id])
+
+  @@map("route_partners")
+}
+
+model RoutePrice {
+  id                  String   @id @default(uuid())
+  departureCountry    String   @map("departure_country")
+  departureRegion     String   @map("departure_region")
+  destinationCountry  String   @map("destination_country")
+  destinationRegion   String   @map("destination_region")
+  basePrice           Float    @map("base_price")
+  createdAt           DateTime @default(now()) @map("created_at")
+
+  @@unique([departureCountry, departureRegion, destinationCountry, destinationRegion])
+  @@map("route_prices")
+}
+
+model Relay {
+  id        String   @id @default(uuid())
+  name      String
+  addressId String   @map("address_id")
+  personId  String   @map("person_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  address  Address   @relation(fields: [addressId], references: [id])
+  person   Person    @relation(fields: [personId], references: [id])
+  packages Package[]
+
+  @@map("relays")
+}
+
+// ─── PAIEMENTS ───────────────────────────────────────────────────────────────
+
+model Currency {
+  id     String @id @default(uuid())
+  code   String @unique
+  name   String
+  symbol String
+
+  payments    Payment[]
+  departureGps DepartureGp[]
+
+  @@map("currencies")
+}
+
+model PaymentMethod {
+  id   String @id @default(uuid())
+  name String @unique
+
+  payments Payment[]
+
+  @@map("payment_methods")
+}
+
+model Payment {
+  id              String   @id @default(uuid())
+  amount          Float
+  currencyId      String   @map("currency_id")
+  amountXof       Float    @map("amount_xof")
+  exchangeRate    Float    @map("exchange_rate")
+  paymentMethodId String   @map("payment_method_id")
+  accepted        Boolean  @default(false)
+  refunded        Boolean  @default(false)
+  packageId       String   @map("package_id")
+  creatorId       String   @map("creator_id")
+  linkInvoice     String?  @map("link_invoice")
+  remise          Float    @default(0)
+  remiseReason    String?  @map("remise_reason")
+  priceRelay      Float?   @map("price_relay")
+  insurancePrice  Float    @default(0) @map("insurance_price")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  currency       Currency      @relation(fields: [currencyId], references: [id])
+  paymentMethod  PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  package        Package       @relation(fields: [packageId], references: [id])
+
+  @@map("payments")
+}

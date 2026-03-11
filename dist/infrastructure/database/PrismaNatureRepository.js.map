@@ -1,0 +1,1 @@
+{"version":3,"file":"PrismaNatureRepository.js","sourceRoot":"","sources":["../../../src/infrastructure/database/PrismaNatureRepository.ts"],"names":[],"mappings":";;;;;;;;;AAEA,OAAO,MAAM,MAAM,qBAAqB,CAAA;AAExC,MAAM,OAAO,sBAAsB;IAC3B,QAAQ,CAAC,EAAU;;YACvB,OAAO,MAAM,MAAM,CAAC,MAAM,CAAC,UAAU,CAAC,EAAE,KAAK,EAAE,EAAE,EAAE,EAAE,EAAE,CAAC,CAAA;QAC1D,CAAC;KAAA;CACF"}
