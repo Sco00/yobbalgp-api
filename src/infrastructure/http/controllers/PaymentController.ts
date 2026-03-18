@@ -36,4 +36,9 @@ export class PaymentController {
     await container.refundPaymentUseCase.execute(req.params.id as string)
     ResponseFormatter.success(res, null, SuccessMessages.PAIEMENT_REMBOURSE);
   }
+
+  invoice = async (req: Request, res: Response): Promise<void> => {
+    const url = await container.generateInvoiceUseCase.execute(req.params.id as string)
+    res.json({ success: true, message: SuccessMessages.FACTURE_GENEREE, data: { invoiceUrl: url } })
+  }
 }

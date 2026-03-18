@@ -11,7 +11,8 @@ export interface PaymentFilters {
 
 export interface IPaymentRepository
   extends Omit<IRepository<PaymentWithRelations, PaymentFilters>, 'save' | 'update' | 'delete'> {
-  save(props: CreatePaymentProps):   Promise<PaymentWithRelations>
-  accept(id: string):                Promise<void>
-  refund(id: string):                Promise<void>
+  save(props: CreatePaymentProps):              Promise<PaymentWithRelations>
+  accept(id: string):                           Promise<void>
+  refund(id: string):                           Promise<void>
+  updateLinkInvoice(id: string, url: string):   Promise<void>
 }

@@ -43,6 +43,7 @@ export enum SuccessMessages {
   PAIEMENT_REMBOURSE    = "Paiement remboursé avec succès",
   PAIEMENT_RECUPERE     = "Paiement récupéré avec succès",
   PAIEMENTS_RECUPERES   = "Paiements récupérés avec succès",
+  FACTURE_GENEREE       = "Facture générée avec succès",
 
   // ── Relais ───────────────────────────────────────────────────────────────────
   RELAIS_CREE           = "Point relais créé avec succès",

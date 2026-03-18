@@ -37,6 +37,8 @@ import { PrismaRelayRepository } from "../database/PrismaRelayRepository.js";
 import { CreateRelayUseCase } from "../../application/relay/CreateRelayUseCase.js";
 import { ListRelaysUseCase } from "../../application/relay/ListRelaysUseCase.js";
 import { GetRelayByIdUseCase } from "../../application/relay/GetRelayByIdUseCase.js";
+import { GenerateInvoiceUseCase } from "../../application/payment/GenerateInvoiceUseCase.js";
+import { GenerateQuoteUseCase }   from "../../application/package/GenerateQuoteUseCase.js";
 
 // ── Repositories
 const packageRepository = new PrismaPackageRepository();
@@ -94,14 +96,13 @@ const createRelayUseCase  = new CreateRelayUseCase(relayRepository)
 const listRelaysUseCase   = new ListRelaysUseCase(relayRepository)
 const getRelayByIdUseCase = new GetRelayByIdUseCase(relayRepository)
 
+const generateInvoiceUseCase = new GenerateInvoiceUseCase(paymentRepository)
+const generateQuoteUseCase   = new GenerateQuoteUseCase(packageRepository)
+
 export const container = {
-  // Repositories
-  // packageRepository,
-  // departureRepository,
-  //   accountRepository,
-  //   personRepository,
-  //   relayRepository,
-  //   paymentRepository,
+  // Repositories (exposés pour les workers)
+  packageRepository,
+  departureRepository,
 
   // Package Use Cases
   createPackageUseCase,
@@ -133,6 +134,9 @@ export const container = {
   createRelayUseCase,
   listRelaysUseCase,
   getRelayByIdUseCase,
+
+  generateInvoiceUseCase,
+  generateQuoteUseCase,
 
   packageController: new PackageController(),
   departureController: new DepartureController(),

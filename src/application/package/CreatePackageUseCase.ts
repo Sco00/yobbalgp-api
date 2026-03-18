@@ -8,6 +8,7 @@ import { ErrorsMessages } from "../../shared/messages/ErrorsMessagesFr.js"
 import { CreatePackageDTO } from "../../infrastructure/http/validators/package.validators.js" 
 import { generateReference } from "../../shared/utils/generateReference.js"
 import { INatureRepository } from "../../domain/repositories/INatureRepository.js"
+import { schedulePackageDeletion } from '../../infrastructure/jobs/queues/package.queue.js'
 
 interface CreatePackageInput extends CreatePackageDTO {
   creatorId: string
@@ -50,6 +51,8 @@ export class CreatePackageUseCase {
       packageNatures: naturesWithPrice
     }
 
-    return await this.packageRepo.save(props)
+    const pkg = await this.packageRepo.save(props)
+    await schedulePackageDeletion(pkg.id, new Date(pkg.departureGp.departureDate))
+    return pkg
   }
 }

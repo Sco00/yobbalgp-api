@@ -53,4 +53,14 @@ export class PackageController {
         )
         res.json({ success: true, message: SuccessMessages.COLIS_MODIFIE, data: null })
     }
+
+    quote = async (req: Request, res: Response): Promise<void> => {
+        const packageId = req.params.id as string
+        const buffer    = await container.generateQuoteUseCase.execute(req.params.id as string)
+
+        res.setHeader('Content-Type', 'application/pdf')
+        res.setHeader('Content-Disposition', `inline; filename="devis-${packageId}.pdf"`)
+        res.setHeader('Content-Length', String(buffer.length))
+        res.end(buffer)
+    }
 }

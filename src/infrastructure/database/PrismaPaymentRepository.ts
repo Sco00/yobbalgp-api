@@ -6,7 +6,10 @@ const paymentInclude = {
   currency:      true,
   paymentMethod: true,
   package: {
-    include: { person: true },
+    include: {
+      person:  true,
+      natures: { include: { nature: true } },
+    },
   },
 } satisfies Parameters<typeof prisma.payment.findUnique>[0]['include']
 
@@ -75,6 +78,13 @@ export class PrismaPaymentRepository implements IPaymentRepository {
     await prisma.payment.update({
       where: { id },
       data:  { refunded: true },
+    })
+  }
+
+  async updateLinkInvoice(id: string, url: string): Promise<void> {
+    await prisma.payment.update({
+      where: { id },
+      data:  { linkInvoice: url },
     })
   }
 }

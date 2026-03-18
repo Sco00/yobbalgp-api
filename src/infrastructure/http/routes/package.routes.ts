@@ -15,5 +15,6 @@ router.patch('/:id/archive', AuthMiddleware.authorizeAdmin, container.packageCon
 router.delete('/:id', AuthMiddleware.authorizeAdmin, container.packageController.delete)
 router.post('/:id/natures', AuthMiddleware.authorizeAdmin, container.packageController.addNature)
 router.delete('/:id/natures/:natureId', AuthMiddleware.authorizeAdmin, container.packageController.removeNature)
+router.get('/:id/quote', AuthMiddleware.authenticate, AuthMiddleware.authorizeClient, container.packageController.quote)
 
 export { router as packageRoutes }

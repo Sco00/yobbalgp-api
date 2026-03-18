@@ -52,6 +52,7 @@ export enum ErrorsMessages {
   PAIEMENT_DEVISE_INTROUVABLE = "Devise introuvable",
   PAIEMENT_MOYEN_INTROUVABLE = "Moyen de paiement introuvable",
   TAUX_CHANGE_INDISPONIBLE = "Impossible de récupérer le taux de change",
+  PAIEMENT_NON_ACCEPTE     = "Le paiement doit être accepté avant de générer une facture",
 
   // ── Relais ───────────────────────────────────────────────────────────────────
   RELAIS_INTROUVABLE = "Point relais introuvable",

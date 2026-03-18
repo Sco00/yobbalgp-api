@@ -3,6 +3,7 @@ import { type DepartureWithRelations, type CreateDepartureProps } from '../../do
 import { ValidationError } from '../../shared/errors/BadRequestError.js'
 import { ErrorsMessages } from '../../shared/messages/ErrorsMessagesFr.js'
 import { type CreateDepartureDTO } from '../../infrastructure/http/validators/departure.validator.js'
+import { scheduleDepartureClose } from '../../infrastructure/jobs/queues/departure.queue.js'
 
 interface CreateDepartureInput extends CreateDepartureDTO {
   creatorId: string
@@ -18,6 +19,8 @@ export class CreateDepartureUseCase {
 
     const props: CreateDepartureProps = { ...input, creatorId: input.creatorId }
 
-    return await this.departureRepo.save(props)
+    const departure = await this.departureRepo.save(props)
+    await scheduleDepartureClose(departure.id, new Date(departure.departureDate))
+    return departure
   }
 }

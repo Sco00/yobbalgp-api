@@ -13,7 +13,8 @@ export type PaymentWithRelations = Prisma.PaymentGetPayload<{
     paymentMethod: true
     package: {
       include: {
-        person: true
+        person:  true
+        natures: { include: { nature: true } }
       }
     }
   }
