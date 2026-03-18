@@ -1,6 +1,6 @@
 export class DepartureGp {
     constructor(props) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c;
         if ('id' in props)
             this.id = props.id;
         this.departureDate = props.departureDate;
@@ -10,15 +10,14 @@ export class DepartureGp {
         this.currencyId = props.currencyId;
         this.departureAddressId = props.departureAddressId;
         this.destinationAddressId = props.destinationAddressId;
-        this.personId = (_a = props.personId) !== null && _a !== void 0 ? _a : undefined;
+        this.personId = (_a = props.personId) !== null && _a !== void 0 ? _a : null;
         this.creatorId = props.creatorId;
-        this.insurancePrice = (_b = props.insurancePrice) !== null && _b !== void 0 ? _b : undefined;
+        this.insurancePrice = (_b = props.insurancePrice) !== null && _b !== void 0 ? _b : null;
         if ('isClosed' in props)
             this.isClosed = props.isClosed;
         else
             this.isClosed = false;
-        if ('arrivalDate' in props)
-            this.arrivalDate = (_c = props.arrivalDate) !== null && _c !== void 0 ? _c : undefined;
+        this.arrivalDate = props.arrivalDate;
         if ('createdAt' in props)
             this.createdAt = props.createdAt;
         if ('currency' in props)
@@ -28,7 +27,7 @@ export class DepartureGp {
         if ('destinationAddress' in props)
             this.destinationAddress = props.destinationAddress;
         if ('person' in props)
-            this.person = (_d = props.person) !== null && _d !== void 0 ? _d : undefined;
+            this.person = (_c = props.person) !== null && _c !== void 0 ? _c : null;
         if ('creator' in props)
             this.creator = props.creator;
         if ('packages' in props)

@@ -1,5 +1,4 @@
 import { PackageStates } from "../../enums/PackageStates.js";
-import { CreatePackageDTO } from "../../../infrastructure/http/validators/package.validators.js";
 import { CreatePackageProps, PackageWithRelations } from "./package.types.js";
 
 export class Package {
@@ -18,6 +17,7 @@ export class Package {
   createdAt: Date | undefined;
   natures?: PackageWithRelations["natures"];
   statuses?: PackageWithRelations["statuses"];
+  departureGp?: PackageWithRelations['departureGp'];
 
   constructor(props: CreatePackageProps | PackageWithRelations) {
     if ('id' in props)this.id = props.id
@@ -30,8 +30,9 @@ export class Package {
     this.relayId = props.relayId ?? null;
     this.departureGpId = props.departureGpId;
     if ('createdAt' in props)this.createdAt = props.createdAt;
-    if ('natures' in props) this.natures = props.natures ?? [];
-    if ('statuses' in props)this.statuses = props.statuses ?? [];
+    if ('natures' in props) this.natures = props.natures;
+    if ('statuses' in props)this.statuses = props.statuses;
+    if ('departureGp' in props)this.departureGp = props.departureGp;
   }
 
 

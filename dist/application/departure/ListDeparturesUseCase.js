@@ -19,7 +19,7 @@ export class ListDeparturesUseCase {
                 props,
                 total,
                 page: (_a = filters.page) !== null && _a !== void 0 ? _a : 1,
-                limit: (_b = filters.limit) !== null && _b !== void 0 ? _b : 20,
+                limit: (_b = filters.limit) !== null && _b !== void 0 ? _b : 10,
             };
         });
     }

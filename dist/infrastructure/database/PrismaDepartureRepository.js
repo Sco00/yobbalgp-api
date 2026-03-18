@@ -23,6 +23,7 @@ export class PrismaDepartureRepository {
             return yield prisma.departureGp.create({
                 data: {
                     departureDate: props.departureDate,
+                    arrivalDate: props.arrivalDate,
                     deadline: props.deadline,
                     price: props.price,
                     priceGp: props.priceGp,
@@ -43,7 +44,7 @@ export class PrismaDepartureRepository {
         });
     }
     findAll() {
-        return __awaiter(this, arguments, void 0, function* (filters = { page: 1, limit: 20 }) {
+        return __awaiter(this, arguments, void 0, function* (filters = { page: 1, limit: 10 }) {
             const { departureCity, destinationCity, currencyId, isClosed, departureDateFrom, page, limit, } = filters;
             const where = Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({}, (currencyId !== undefined && { currencyId })), (isClosed !== undefined && { isClosed })), (departureCity && { departureAddress: { city: departureCity } })), (destinationCity && { destinationAddress: { city: destinationCity } })), ((departureDateFrom) && {
                 departureDate: Object.assign({}, (departureDateFrom && { gte: departureDateFrom })),

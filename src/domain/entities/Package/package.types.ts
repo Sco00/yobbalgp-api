@@ -1,10 +1,10 @@
 import { Prisma } from "@prisma/client";
 import { CreatePackageDTO } from "../../../infrastructure/http/validators/package.validators.js";
 
-type NatureInput = {
+export type NatureInput = {
   natureId: string
   quantity: number
-  price:    number  // ← ajouter
+  price:    number
 }
 
 export type SystemFields = {
@@ -14,13 +14,22 @@ export type SystemFields = {
 
 export type PackageWithRelations = Prisma.PackageGetPayload<{
   include: {
-    person: true;
-    creator: true;
-    natures: true;
-    statuses: true;
-    relay: true;
-  };
-}>;
+    creator:  true
+    person:   { include: { personType: true } }
+    relay:    { include: { address: true } }
+    natures:  { include: { nature: true } }
+    statuses: true
+    payments: true
+    departureGp: {
+      include: {
+        currency:           true
+        departureAddress:   true
+        destinationAddress: true
+        person:             true
+      }
+    }
+  }
+}>
 
 export type CreatePackageProps = Omit<CreatePackageDTO, 'packageNatures'> &
   SystemFields & {

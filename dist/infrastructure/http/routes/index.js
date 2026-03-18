@@ -6,7 +6,7 @@ import { departureRoutes } from "./departure.routes.js";
 const router = express.Router();
 router.use("/accounts", accountRoutes);
 router.use("/packages", packageRoutes);
-router.use("/person", personRoutes);
+router.use("/persons", personRoutes);
 router.use("/departures", departureRoutes);
 export default router;
 //# sourceMappingURL=index.js.map

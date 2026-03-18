@@ -11,7 +11,7 @@ export declare const CreateAccountSchema: z.ZodIntersection<z.ZodObject<{
 }, z.core.$strip>, z.ZodObject<{
     firstName: z.ZodOptional<z.ZodString>;
     lastName: z.ZodOptional<z.ZodString>;
-    mobile: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+    mobile: z.ZodOptional<z.ZodString>;
     personTypeId: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>>;
 export type LoginDTO = z.infer<typeof LoginSchema>;

@@ -14,8 +14,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
@@ -59,24 +59,24 @@ model Person {
   id           String   @id @default(uuid())
   firstName    String   @map("first_name")
   lastName     String   @map("last_name")
-  mobile       String
+  mobile       String   @unique
   personTypeId String   @map("person_type_id")
   createdAt    DateTime @default(now()) @map("created_at")
 
-  personType    PersonType     @relation(fields: [personTypeId], references: [id])
-  account       Account?
-  packages      Package[]      @relation("PackageOwner")
-  createdPackages Package[]    @relation("PackageCreator")
-  departureGpsOwned   DepartureGp[] @relation("DepartureGpOwner")
-  departureGpsCreated DepartureGp[] @relation("DepartureGpCreator")
-  routePartners RoutePartner[]
-  relays        Relay[]
+  personType          PersonType     @relation(fields: [personTypeId], references: [id])
+  account             Account?
+  packages            Package[]      @relation("PackageOwner")
+  createdPackages     Package[]      @relation("PackageCreator")
+  departureGpsOwned   DepartureGp[]  @relation("DepartureGpOwner")
+  departureGpsCreated DepartureGp[]  @relation("DepartureGpCreator")
+  routePartners       RoutePartner[]
+  relays              Relay[]
 
   @@map("persons")
 }
 
 model Role {
-  id   String   @id @default(uuid())
+  id   String @id @default(uuid())
   name String @unique
 
   accounts Account[]
@@ -92,8 +92,8 @@ model Account {
   roleId    String   @map("role_id")
   createdAt DateTime @default(now()) @map("created_at")
 
-  person   Person  @relation(fields: [personId], references: [id])
-  role     Role    @relation(fields: [roleId], references: [id])
+  person Person @relation(fields: [personId], references: [id])
+  role   Role   @relation(fields: [roleId], references: [id])
 
   @@map("accounts")
 }
@@ -112,11 +112,11 @@ model Address {
   addressHash String      @unique @map("address_hash")
   createdAt   DateTime    @default(now()) @map("created_at")
 
-  departureGpsDepartures  DepartureGp[] @relation("DepartureAddress")
-  departureGpsDestinations DepartureGp[] @relation("DestinationAddress")
-  routePartnerDepartures  RoutePartner[] @relation("RoutePartnerDeparture")
+  departureGpsDepartures   DepartureGp[]  @relation("DepartureAddress")
+  departureGpsDestinations DepartureGp[]  @relation("DestinationAddress")
+  routePartnerDepartures   RoutePartner[] @relation("RoutePartnerDeparture")
   routePartnerDestinations RoutePartner[] @relation("RoutePartnerDestination")
-  relays                  Relay[]
+  relays                   Relay[]
 
   @@map("addresses")
 }
@@ -136,7 +136,7 @@ model Nature {
 
 model Package {
   id            String   @id @default(uuid())
-  reference     String      @unique
+  reference     String   @unique
   weight        Float
   isCompleted   Boolean  @default(false) @map("is_completed")
   isArchived    Boolean  @default(false) @map("is_archived")
@@ -173,10 +173,10 @@ model PackageNature {
 }
 
 model PackageStatus {
-  id        String     @id @default(uuid())
-  packageId String     @map("package_id")
+  id        String       @id @default(uuid())
+  packageId String       @map("package_id")
   state     PackageState @default(EN_ATTENTE)
-  createdAt DateTime   @default(now()) @map("created_at")
+  createdAt DateTime     @default(now()) @map("created_at")
 
   package Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
 
@@ -186,26 +186,26 @@ model PackageStatus {
 // ─── DÉPARTS GP ──────────────────────────────────────────────────────────────
 
 model DepartureGp {
-  id                   String    @id @default(uuid())
-  departureDate        DateTime  @map("departure_date")
+  id                   String   @id @default(uuid())
+  departureDate        DateTime @map("departure_date")
   deadline             DateTime
-  arrivalDate          DateTime? @map("arrival_date")
+  arrivalDate          DateTime @map("arrival_date")
   price                Float
-  priceGp              Float     @map("price_gp")
-  currencyId           String    @map("currency_id")
-  departureAddressId   String    @map("departure_address_id")
-  destinationAddressId String    @map("destination_address_id")
-  personId             String?    @map("person_id")
-  creatorId            String    @map("creator_id")
-  insurancePrice       Float?    @map("insurance_price")
-  isClosed             Boolean   @default(false) @map("is_closed")
-  createdAt            DateTime  @default(now()) @map("created_at")
+  priceGp              Float    @map("price_gp")
+  currencyId           String   @map("currency_id")
+  departureAddressId   String   @map("departure_address_id")
+  destinationAddressId String   @map("destination_address_id")
+  personId             String?  @map("person_id")
+  creatorId            String   @map("creator_id")
+  insurancePrice       Float?   @map("insurance_price")
+  isClosed             Boolean  @default(false) @map("is_closed")
+  createdAt            DateTime @default(now()) @map("created_at")
 
-  currency            Currency @relation(fields: [currencyId], references: [id])
-  departureAddress    Address  @relation("DepartureAddress", fields: [departureAddressId], references: [id])
-  destinationAddress  Address  @relation("DestinationAddress", fields: [destinationAddressId], references: [id])
-  person              Person?   @relation("DepartureGpOwner", fields: [personId], references: [id])
-  creator             Person   @relation("DepartureGpCreator", fields: [creatorId], references: [id])
+  currency           Currency @relation(fields: [currencyId], references: [id])
+  departureAddress   Address  @relation("DepartureAddress", fields: [departureAddressId], references: [id])
+  destinationAddress Address  @relation("DestinationAddress", fields: [destinationAddressId], references: [id])
+  person             Person?  @relation("DepartureGpOwner", fields: [personId], references: [id])
+  creator            Person   @relation("DepartureGpCreator", fields: [creatorId], references: [id])
 
   packages Package[]
 
@@ -213,29 +213,29 @@ model DepartureGp {
 }
 
 model RoutePartner {
-  id                   String   @id @default(uuid())
-  personId             String   @map("person_id")
-  departureAddressId   String   @map("departure_address_id")
-  destinationAddressId String   @map("destination_address_id")
+  id                   String    @id @default(uuid())
+  personId             String    @map("person_id")
+  departureAddressId   String    @map("departure_address_id")
+  destinationAddressId String    @map("destination_address_id")
   frequency            Frequency
-  frequencyNote String?    @map("frequency_note")
-  createdAt            DateTime @default(now()) @map("created_at")
+  frequencyNote        String?   @map("frequency_note")
+  createdAt            DateTime  @default(now()) @map("created_at")
 
-  person              Person  @relation(fields: [personId], references: [id])
-  departureAddress    Address @relation("RoutePartnerDeparture", fields: [departureAddressId], references: [id])
-  destinationAddress  Address @relation("RoutePartnerDestination", fields: [destinationAddressId], references: [id])
+  person             Person  @relation(fields: [personId], references: [id])
+  departureAddress   Address @relation("RoutePartnerDeparture", fields: [departureAddressId], references: [id])
+  destinationAddress Address @relation("RoutePartnerDestination", fields: [destinationAddressId], references: [id])
 
   @@map("route_partners")
 }
 
 model RoutePrice {
-  id                  String   @id @default(uuid())
-  departureCountry    String   @map("departure_country")
-  departureRegion     String   @map("departure_region")
-  destinationCountry  String   @map("destination_country")
-  destinationRegion   String   @map("destination_region")
-  basePrice           Float    @map("base_price")
-  createdAt           DateTime @default(now()) @map("created_at")
+  id                 String   @id @default(uuid())
+  departureCountry   String   @map("departure_country")
+  departureRegion    String   @map("departure_region")
+  destinationCountry String   @map("destination_country")
+  destinationRegion  String   @map("destination_region")
+  basePrice          Float    @map("base_price")
+  createdAt          DateTime @default(now()) @map("created_at")
 
   @@unique([departureCountry, departureRegion, destinationCountry, destinationRegion])
   @@map("route_prices")
@@ -263,7 +263,7 @@ model Currency {
   name   String
   symbol String
 
-  payments    Payment[]
+  payments     Payment[]
   departureGps DepartureGp[]
 
   @@map("currencies")
@@ -296,9 +296,9 @@ model Payment {
   insurancePrice  Float    @default(0) @map("insurance_price")
   createdAt       DateTime @default(now()) @map("created_at")
 
-  currency       Currency      @relation(fields: [currencyId], references: [id])
-  paymentMethod  PaymentMethod @relation(fields: [paymentMethodId], references: [id])
-  package        Package       @relation(fields: [packageId], references: [id])
+  currency      Currency      @relation(fields: [currencyId], references: [id])
+  paymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  package       Package       @relation(fields: [packageId], references: [id])
 
   @@map("payments")
 }

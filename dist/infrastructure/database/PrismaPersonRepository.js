@@ -42,7 +42,7 @@ export class PrismaPersonRepository {
     }
     findAll(filters) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { personTypeId, search, page = 1, limit = 20 } = filters;
+            const { personTypeId, search, page = 1, limit = 10 } = filters;
             const where = Object.assign({ personTypeId: personTypeId }, (search && {
                 OR: [
                     { firstName: { contains: search, mode: 'insensitive' } },

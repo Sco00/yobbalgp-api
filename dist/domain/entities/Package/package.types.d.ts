@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { CreatePackageDTO } from "../../../infrastructure/http/validators/package.validators.js";
-type NatureInput = {
+export type NatureInput = {
     natureId: string;
     quantity: number;
     price: number;
@@ -21,5 +21,4 @@ export type PackageWithRelations = Prisma.PackageGetPayload<{
 export type CreatePackageProps = Omit<CreatePackageDTO, 'packageNatures'> & SystemFields & {
     creatorId: string;
 };
-export {};
 //# sourceMappingURL=package.types.d.ts.map

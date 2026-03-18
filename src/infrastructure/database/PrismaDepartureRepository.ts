@@ -9,7 +9,6 @@ const departureInclude = {
   destinationAddress: true,
   person:             true,
   creator:            true,
-  packages:           true,
 } satisfies Parameters<typeof prisma.departureGp.findUnique>[0]['include']
 
 export class PrismaDepartureRepository implements IDepartureRepository {
@@ -17,6 +16,7 @@ export class PrismaDepartureRepository implements IDepartureRepository {
     return await prisma.departureGp.create({
       data: {
         departureDate:        props.departureDate,
+        arrivalDate:        props.arrivalDate,
         deadline:             props.deadline,
         price:                props.price,
         priceGp:              props.priceGp,
@@ -35,7 +35,7 @@ export class PrismaDepartureRepository implements IDepartureRepository {
     return await prisma.departureGp.findUnique({ where: { id }, include: departureInclude })
   }
 
-  async findAll(filters: DepartureFilters = { page: 1, limit: 20 }): Promise<{ props: DepartureWithRelations[]; total: number }> {
+  async findAll(filters: DepartureFilters = { page: 1, limit: 10 }): Promise<{ props: DepartureWithRelations[]; total: number }> {
     const {
       departureCity,
       destinationCity,

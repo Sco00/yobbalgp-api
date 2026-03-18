@@ -26,6 +26,6 @@ export const PackageFiltersSchema = z.object({
     destinationCountry: z.coerce.string().optional(),
     currencyId: z.coerce.string().optional(),
     page: z.coerce.number().int().positive().default(1),
-    limit: z.coerce.number().int().positive().max(100).default(20),
+    limit: z.coerce.number().int().positive().max(100).default(10),
 });
 //# sourceMappingURL=package.validators.js.map

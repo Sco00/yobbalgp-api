@@ -20,12 +20,11 @@ export class AccountController {
             ResponseFormatter.success(res, result, SuccessMessages.CONNEXION_REUSSIE);
         });
         this.create = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
             const dto = CreateAccountSchema.parse(req.body);
             const person = yield container.createPersonUseCase.execute({
                 firstName: dto.firstName,
                 lastName: dto.lastName,
-                mobile: (_a = dto.mobile) !== null && _a !== void 0 ? _a : null,
+                mobile: dto.mobile,
                 personTypeId: dto.personTypeId,
             }, false);
             const account = yield container.createAccountUseCase.execute({

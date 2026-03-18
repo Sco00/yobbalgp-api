@@ -12,7 +12,5 @@ export type DepartureWithRelations = Prisma.DepartureGpGetPayload<{
 }>;
 export type CreateDepartureProps = CreateDepartureDTO & {
     creatorId: string;
-    id?: string;
-    createdAt?: Date;
 };
 //# sourceMappingURL=departure.types.d.ts.map

@@ -1,11 +1,10 @@
 import { PersonWithRelations, CreatePersonProps } from '../entities/Person/person.types.js'
 import { type IRepository } from './IRepository.js'
-import { type CreatePersonDTO } from '../../infrastructure/http/validators/person.validator.js'
 import { Person } from '@prisma/client'
 
 export interface PersonFilters {
   personTypeId?: string
-  search?:       string  // recherche sur firstName ou lastName
+  search?:       string  // recherche sur firstName, lastName ou mobile
   page?:         number
   limit?:        number
 }

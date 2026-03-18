@@ -10,17 +10,15 @@ export class Person {
   createdAt?:   PrismaPerson['createdAt']
 
   personType?: PersonWithRelations['personType']
-  account?:    PersonWithRelations['account']
 
   constructor(props: CreatePersonProps | PersonWithRelations) {
     if ('id' in props)         this.id         = props.id
     if ('createdAt' in props)  this.createdAt  = props.createdAt
     if ('personType' in props) this.personType = props.personType
-    if ('account' in props)    this.account    = props.account
 
     this.firstName    = props.firstName
     this.lastName     = props.lastName
-    this.mobile       = props.mobile       ?? null
+    this.mobile       = props.mobile
     this.personTypeId = props.personTypeId
   }
 
@@ -28,7 +26,4 @@ export class Person {
     return `${this.firstName} ${this.lastName}`
   }
 
-  hasAccount(): boolean {
-    return !!this.account
-  }
 }

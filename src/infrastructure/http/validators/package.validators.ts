@@ -24,15 +24,17 @@ export const UpdatePackageStatusSchema = z.object({
 })
 
 export const PackageFiltersSchema = z.object({
-  state:         z.nativeEnum(PackageStates).optional(),
-  departureDateFrom:    z.coerce.date().optional(),
-  departureCountry:    z.coerce.string().optional(),
-  destinationCountry:    z.coerce.string().optional(),
-  currencyId:    z.coerce.string().optional(),
-  page:          z.coerce.number().int().positive().default(1),
-  limit:         z.coerce.number().int().positive().max(100).default(20),
+  search:             z.string().optional(),
+  state:              z.nativeEnum(PackageStates).optional(),
+  departureDateFrom:  z.coerce.date().optional(),
+  departureCountry:   z.coerce.string().optional(),
+  destinationCountry: z.coerce.string().optional(),
+  currencyId:         z.coerce.string().optional(),
+  page:               z.coerce.number().int().positive().default(1),
+  limit:              z.coerce.number().int().positive().max(100).default(10),
 })
 
 export type CreatePackageDTO      = z.infer<typeof CreatePackageSchema>
 export type UpdatePackageStatusDTO = z.infer<typeof UpdatePackageStatusSchema>
 export type PackageFiltersDTO     = z.infer<typeof PackageFiltersSchema>
+export type PackageNaturesDTO     = z.infer<typeof PackageNatureSchema>

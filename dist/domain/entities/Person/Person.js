@@ -1,6 +1,5 @@
 export class Person {
     constructor(props) {
-        var _a;
         if ('id' in props)
             this.id = props.id;
         if ('createdAt' in props)
@@ -11,7 +10,7 @@ export class Person {
             this.account = props.account;
         this.firstName = props.firstName;
         this.lastName = props.lastName;
-        this.mobile = (_a = props.mobile) !== null && _a !== void 0 ? _a : null;
+        this.mobile = props.mobile;
         this.personTypeId = props.personTypeId;
     }
     getFullName() {

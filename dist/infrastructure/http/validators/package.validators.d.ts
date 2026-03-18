@@ -29,4 +29,5 @@ export declare const PackageFiltersSchema: z.ZodObject<{
 export type CreatePackageDTO = z.infer<typeof CreatePackageSchema>;
 export type UpdatePackageStatusDTO = z.infer<typeof UpdatePackageStatusSchema>;
 export type PackageFiltersDTO = z.infer<typeof PackageFiltersSchema>;
+export type PackageNaturesDTO = z.infer<typeof PackageNatureSchema>;
 //# sourceMappingURL=package.validators.d.ts.map

@@ -52,7 +52,7 @@ export class PrismaPackageRepository {
         });
     }
     findAll() {
-        return __awaiter(this, arguments, void 0, function* (filters = { page: 1, limit: 20 }) {
+        return __awaiter(this, arguments, void 0, function* (filters = { page: 1, limit: 10 }) {
             const { state, departureDateFrom, departureCountry, destinationCountry, currencyId, page, limit, } = filters;
             const departureGpFilter = Object.assign(Object.assign(Object.assign(Object.assign({}, (currencyId && { currencyId })), (departureDateFrom && { departureDate: { gte: departureDateFrom } })), (departureCountry && { departureAddress: { country: departureCountry } })), (destinationCountry && { destinationAddress: { country: destinationCountry } }));
             const where = Object.assign(Object.assign({}, (state && { statuses: { some: { state } } })), (Object.keys(departureGpFilter).length > 0 && { departureGp: departureGpFilter }));
@@ -99,6 +99,25 @@ export class PrismaPackageRepository {
                 select: { reference: true },
             });
             return (_a = last === null || last === void 0 ? void 0 : last.reference) !== null && _a !== void 0 ? _a : null;
+        });
+    }
+    addNature(packageId, nature) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield prisma.packageNature.create({
+                data: {
+                    packageId,
+                    natureId: nature.natureId,
+                    quantity: nature.quantity,
+                    price: nature.price,
+                }
+            });
+        });
+    }
+    removeNature(packageId, natureId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield prisma.packageNature.deleteMany({
+                where: { packageId, natureId }
+            });
         });
     }
 }

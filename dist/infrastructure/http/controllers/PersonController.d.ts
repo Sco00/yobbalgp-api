@@ -1,4 +1,4 @@
-import { type Request, type Response } from 'express';
+import { Request, Response } from 'express';
 export declare class PersonController {
     create: (req: Request, res: Response) => Promise<void>;
     list: (req: Request, res: Response) => Promise<void>;

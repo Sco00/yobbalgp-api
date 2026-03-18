@@ -4,7 +4,6 @@ import { type CreatePersonDTO } from '../../../infrastructure/http/validators/pe
 export type PersonWithRelations = Prisma.PersonGetPayload<{
   include: {
     personType: true
-    account:    true
   }
 }>
 

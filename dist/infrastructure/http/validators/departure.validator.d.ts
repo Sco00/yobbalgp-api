@@ -1,6 +1,7 @@
 import { z } from 'zod';
 export declare const CreateDepartureSchema: z.ZodObject<{
     departureDate: z.ZodCoercedDate<unknown>;
+    arrivalDate: z.ZodCoercedDate<unknown>;
     deadline: z.ZodCoercedDate<unknown>;
     price: z.ZodNumber;
     priceGp: z.ZodNumber;
@@ -16,7 +17,6 @@ export declare const DepartureFiltersSchema: z.ZodObject<{
     currencyId: z.ZodOptional<z.ZodString>;
     isClosed: z.ZodOptional<z.ZodCoercedBoolean<unknown>>;
     departureDateFrom: z.ZodOptional<z.ZodCoercedDate<unknown>>;
-    departureDateTo: z.ZodOptional<z.ZodCoercedDate<unknown>>;
     page: z.ZodDefault<z.ZodCoercedNumber<unknown>>;
     limit: z.ZodDefault<z.ZodCoercedNumber<unknown>>;
 }, z.core.$strip>;

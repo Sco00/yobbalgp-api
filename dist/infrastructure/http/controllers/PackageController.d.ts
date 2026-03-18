@@ -6,5 +6,7 @@ export declare class PackageController {
     updateStatus(req: Request, res: Response, next: NextFunction): Promise<void>;
     archive(req: Request, res: Response, next: NextFunction): Promise<void>;
     delete(req: Request, res: Response, next: NextFunction): Promise<void>;
+    addNature: (req: Request, res: Response) => Promise<void>;
+    removeNature: (req: Request, res: Response) => Promise<void>;
 }
 //# sourceMappingURL=PackageController.d.ts.map

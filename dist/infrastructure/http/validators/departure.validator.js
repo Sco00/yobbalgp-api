@@ -1,6 +1,7 @@
 import { z } from 'zod';
 export const CreateDepartureSchema = z.object({
     departureDate: z.coerce.date(),
+    arrivalDate: z.coerce.date(),
     deadline: z.coerce.date(),
     price: z.number().positive(),
     priceGp: z.number().positive(),
@@ -16,8 +17,7 @@ export const DepartureFiltersSchema = z.object({
     currencyId: z.string().uuid().optional(),
     isClosed: z.coerce.boolean().optional(),
     departureDateFrom: z.coerce.date().optional(),
-    departureDateTo: z.coerce.date().optional(),
     page: z.coerce.number().int().positive().default(1),
-    limit: z.coerce.number().int().positive().max(100).default(20),
+    limit: z.coerce.number().int().positive().max(100).default(10),
 });
 //# sourceMappingURL=departure.validator.js.map

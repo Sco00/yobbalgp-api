@@ -17,7 +17,7 @@ export class ListPersonsUseCase {
       props,
       total,
       page:  filters.page  ?? 1,
-      limit: filters.limit ?? 20,
+      limit: filters.limit ?? 10,
     }
   }
 }

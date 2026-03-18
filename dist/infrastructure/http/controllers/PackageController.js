@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { CreatePackageSchema, UpdatePackageStatusSchema, PackageFiltersSchema, } from '../validators/package.validators.js';
+import { CreatePackageSchema, UpdatePackageStatusSchema, PackageFiltersSchema, PackageNatureSchema, } from '../validators/package.validators.js';
 import { container } from '../../config/container.js';
 import { ResponseFormatter } from '../middlewares/ReponseFormatter.js';
 import { SuccessMessages } from '../../../shared/messages/SuccessMessagesFr.js';
@@ -18,6 +18,15 @@ export class PackageController {
             const dto = CreatePackageSchema.parse(req.body);
             const result = yield container.createPackageUseCase.execute(Object.assign(Object.assign({}, dto), { creatorId: req.user.id }));
             ResponseFormatter.success(res, result, SuccessMessages.COLIS_CREE, HttpStatusCode.CREATED);
+        });
+        this.addNature = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const dto = PackageNatureSchema.parse(req.body);
+            yield container.addNatureToPackageUseCase.execute(req.params.id, dto);
+            res.status(201).json({ success: true, message: SuccessMessages.COLIS_MODIFIE, data: null });
+        });
+        this.removeNature = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            yield container.removeNatureFromPackageUseCase.execute(req.params.id, req.params.natureId);
+            res.json({ success: true, message: SuccessMessages.COLIS_MODIFIE, data: null });
         });
     }
     list(req, res, next) {

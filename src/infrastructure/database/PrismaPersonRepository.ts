@@ -5,7 +5,6 @@ import { CreatePersonProps, PersonWithRelations } from "../../domain/entities/Pe
 
 const personInclude = {
   personType: true,
-  account: true
 } satisfies Parameters<typeof prisma.person.findUnique>[0]["include"];
 
 export class PrismaPersonRepository implements IPersonRepository {
@@ -33,7 +32,7 @@ export class PrismaPersonRepository implements IPersonRepository {
   }
 
   async findAll(filters: PersonFilters): Promise<{ props: PersonWithRelations[]; total: number }> {
-  const { personTypeId, search, page = 1, limit = 20 } = filters
+  const { personTypeId, search, page = 1, limit = 10 } = filters
 
   const where = {
       personTypeId: personTypeId!,
@@ -41,6 +40,7 @@ export class PrismaPersonRepository implements IPersonRepository {
         OR: [
           { firstName: { contains: search, mode: 'insensitive' as const } },
           { lastName:  { contains: search, mode: 'insensitive' as const } },
+          { mobile:    { contains: search, mode: 'insensitive' as const } },
         ]
       })
     }
