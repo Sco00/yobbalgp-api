@@ -4,7 +4,7 @@ import { AuthMiddleware }    from '../middlewares/AuthMiddleware.js'
 
 const router     = Router()
 
-// router.use(AuthMiddleware.authenticate)
+router.use(AuthMiddleware.authenticate)
 
 router.get('/', container.packageController.list)
 router.get('/:id', container.packageController.getById)

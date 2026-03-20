@@ -7,8 +7,8 @@ const controller = new RelayController()
 
 router.use(AuthMiddleware.authenticate)
 
-router.get('/',    AuthMiddleware.authorizeAdmin, controller.list)
+router.get('/', AuthMiddleware.authorizeAdmin, controller.list)
 router.get('/:id', AuthMiddleware.authorizeAdmin, controller.getById)
-router.post('/',   AuthMiddleware.authorizeAdmin, controller.create)
+router.post('/', AuthMiddleware.authorizeAdmin, controller.create)
 
 export { router as relayRoutes }

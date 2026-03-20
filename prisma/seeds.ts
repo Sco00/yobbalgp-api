@@ -224,7 +224,7 @@ async function main() {
   // ─── Accounts ─────────────────────────────────────────────────────────────
   const hashedPassword = await bcrypt.hash('Password123!', 10)
 
-  await Promise.all([
+  const [accountAdmin] = await Promise.all([
     prisma.account.upsert({
       where: { personId: personAdmin.id },
       update: {},
@@ -355,7 +355,7 @@ async function main() {
         departureAddressId: addrParis.id,
         destinationAddressId: addrDakar.id,
         personId: personGP1.id,
-        creatorId: personAdmin.id,
+        creatorId: accountAdmin.id,
         insurancePrice: 1.5,
         isClosed: true,
       },
@@ -371,7 +371,7 @@ async function main() {
         departureAddressId: addrMarseille.id,
         destinationAddressId: addrDakar.id,
         personId: personGP2.id,
-        creatorId: personAdmin.id,
+        creatorId: accountAdmin.id,
         isClosed: true,
       },
     }),
@@ -386,7 +386,7 @@ async function main() {
         departureAddressId: addrParis.id,
         destinationAddressId: addrDakar.id,
         personId: personGP1.id,
-        creatorId: personAdmin.id,
+        creatorId: accountAdmin.id,
         insurancePrice: 2.0,
         isClosed: false,
       },
@@ -402,7 +402,7 @@ async function main() {
         departureAddressId: addrParis.id,
         destinationAddressId: addrDakar.id,
         personId: personGP2.id,
-        creatorId: personAdmin.id,
+        creatorId: accountAdmin.id,
         isClosed: false,
       },
     }),
@@ -418,7 +418,7 @@ async function main() {
         reference: 'YBL-2024-001',
         weight: 5.0,
         personId: personClient1.id,
-        creatorId: personAdmin.id,
+        creatorId: accountAdmin.id,
         departureGpId: dep1.id,
         natures: {
           create: [
@@ -436,7 +436,7 @@ async function main() {
         reference: 'YBL-2024-002',
         weight: 3.5,
         personId: personClient2.id,
-        creatorId: personAdmin.id,
+        creatorId: accountAdmin.id,
         departureGpId: dep1.id,
         relayId: relay.id,
         natures: {
@@ -454,7 +454,7 @@ async function main() {
         reference: 'YBL-2025-001',
         weight: 8.0,
         personId: personClient1.id,
-        creatorId: personAdmin.id,
+        creatorId: accountAdmin.id,
         departureGpId: dep3.id,
         natures: {
           create: [

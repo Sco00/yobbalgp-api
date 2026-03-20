@@ -7,9 +7,12 @@ export class CloudinaryService {
       const stream = cloudinary.uploader.upload_stream(
         {
           resource_type: 'image',
+          type:          'upload',
+          access_mode:   'public',
           folder:        'yobbalgp/invoices',
           public_id:     filename,
           format:        'pdf',
+          sign_url: true,
         },
         (error, result) => {
           if (error || !result) return reject(error)

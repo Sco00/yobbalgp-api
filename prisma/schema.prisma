@@ -63,14 +63,12 @@ model Person {
   personTypeId String   @map("person_type_id")
   createdAt    DateTime @default(now()) @map("created_at")
 
-  personType          PersonType     @relation(fields: [personTypeId], references: [id])
-  account             Account?
-  packages            Package[]      @relation("PackageOwner")
-  createdPackages     Package[]      @relation("PackageCreator")
-  departureGpsOwned   DepartureGp[]  @relation("DepartureGpOwner")
-  departureGpsCreated DepartureGp[]  @relation("DepartureGpCreator")
-  routePartners       RoutePartner[]
-  relays              Relay[]
+  personType        PersonType     @relation(fields: [personTypeId], references: [id])
+  account           Account?
+  packages          Package[]      @relation("PackageOwner")
+  departureGpsOwned DepartureGp[]  @relation("DepartureGpOwner")
+  routePartners     RoutePartner[]
+  relays            Relay[]
 
   @@map("persons")
 }
@@ -92,8 +90,11 @@ model Account {
   roleId    String   @map("role_id")
   createdAt DateTime @default(now()) @map("created_at")
 
-  person Person @relation(fields: [personId], references: [id])
-  role   Role   @relation(fields: [roleId], references: [id])
+  createdPackages     Package[]     @relation("PackageCreator")
+  departureGpsCreated DepartureGp[] @relation("DepartureGpCreator")
+  paymentsCreated     Payment[]     @relation("PaymentCreator")
+  person              Person        @relation(fields: [personId], references: [id])
+  role                Role          @relation(fields: [roleId], references: [id])
 
   @@map("accounts")
 }
@@ -146,7 +147,7 @@ model Package {
   departureGpId String   @map("departure_gp_id")
   createdAt     DateTime @default(now()) @map("created_at")
 
-  creator     Person      @relation("PackageCreator", fields: [creatorId], references: [id])
+  creator     Account     @relation("PackageCreator", fields: [creatorId], references: [id])
   person      Person      @relation("PackageOwner", fields: [personId], references: [id])
   relay       Relay?      @relation(fields: [relayId], references: [id])
   departureGp DepartureGp @relation(fields: [departureGpId], references: [id])
@@ -205,7 +206,7 @@ model DepartureGp {
   departureAddress   Address  @relation("DepartureAddress", fields: [departureAddressId], references: [id])
   destinationAddress Address  @relation("DestinationAddress", fields: [destinationAddressId], references: [id])
   person             Person?  @relation("DepartureGpOwner", fields: [personId], references: [id])
-  creator            Person   @relation("DepartureGpCreator", fields: [creatorId], references: [id])
+  creator            Account  @relation("DepartureGpCreator", fields: [creatorId], references: [id])
 
   packages Package[]
 
@@ -299,6 +300,7 @@ model Payment {
   currency      Currency      @relation(fields: [currencyId], references: [id])
   paymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id])
   package       Package       @relation(fields: [packageId], references: [id])
+  creator       Account       @relation("PaymentCreator", fields: [creatorId], references: [id])
 
   @@map("payments")
 }
