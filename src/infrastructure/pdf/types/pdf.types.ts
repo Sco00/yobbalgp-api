@@ -53,6 +53,8 @@ export interface QuoteData {
     destinationAddress: string
   }
   totalEstime: number
+  totalXof:    number
+  totalUsd:    number
   currency: {
     code:   string
     symbol: string

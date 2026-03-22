@@ -36,8 +36,8 @@ export class GenerateInvoiceUseCase {
       natures: payment.package.natures.map(pn => ({
         name:      pn.nature.name,
         quantity:  pn.quantity,
-        unitPrice: pn.price,
-        total:     pn.quantity * pn.price,
+        unitPrice: pn.price / pn.quantity,
+        total:     pn.price,
       })),
       remise:        payment.remise,
       remiseReason:  payment.remiseReason,

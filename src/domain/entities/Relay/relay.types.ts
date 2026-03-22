@@ -11,4 +11,23 @@ export type RelayWithRelations = Prisma.RelayGetPayload<{
   }
 }>
 
+export type RelayDetailWithRelations = Prisma.RelayGetPayload<{
+  include: {
+    person:  true
+    address: true
+    _count: {
+      select: { packages: true }
+    }
+    packages: {
+      include: {
+        statuses:    true
+        person:      true
+        natures:     { include: { nature: true } }
+        payments:    { include: { currency: true; paymentMethod: true } }
+        departureGp: { include: { departureAddress: true; destinationAddress: true } }
+      }
+    }
+  }
+}>
+
 export type CreateRelayProps = CreateRelayDTO

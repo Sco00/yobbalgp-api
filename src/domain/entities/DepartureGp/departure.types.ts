@@ -8,6 +8,23 @@ export type DepartureWithRelations = Prisma.DepartureGpGetPayload<{
     destinationAddress: true
     person:             true
     creator:            true
+    statuses:           true
+  }
+}>
+
+export type DepartureWithPackages = Prisma.DepartureGpGetPayload<{
+  include: {
+    currency:           true
+    departureAddress:   true
+    destinationAddress: true
+    person:             true
+    creator:            true
+    statuses:           true
+    packages: {
+      include: {
+        statuses: true
+      }
+    }
   }
 }>
 

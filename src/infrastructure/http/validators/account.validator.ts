@@ -25,5 +25,10 @@ export const CreateAccountSchema = z.object({
     { message: "Fournir soit un personId existant, soit les informations de la personne" }
   )
 
-export type LoginDTO         = z.infer<typeof LoginSchema>
-export type CreateAccountDTO = z.infer<typeof CreateAccountSchema>
+export const RefreshTokenSchema = z.object({
+  refreshToken: z.string({ error: 'Le refresh token est obligatoire' }),
+})
+
+export type LoginDTO          = z.infer<typeof LoginSchema>
+export type CreateAccountDTO  = z.infer<typeof CreateAccountSchema>
+export type RefreshTokenDTO   = z.infer<typeof RefreshTokenSchema>

@@ -1,9 +1,18 @@
 import { z } from 'zod'
-import { PackageStates } from '../../../domain/enums/PackageStates.js' 
+import { PackageStates } from '../../../domain/enums/PackageStates.js'
 
 export const PackageNatureSchema = z.object({
   natureId: z.string().uuid(),
   quantity: z.number().positive(),
+})
+
+const PaymentInputSchema = z.object({
+  amount:          z.number().positive(),
+  currencyId:      z.string().uuid(),
+  paymentMethodId: z.string().uuid(),
+  remise:          z.number().nonnegative().optional(),
+  remiseReason:    z.string().optional(),
+  insurancePrice:  z.number().nonnegative().optional(),
 })
 
 export const CreatePackageSchema = z.object({
@@ -15,8 +24,9 @@ export const CreatePackageSchema = z.object({
                   .uuid("L'identifiant du client est invalide"),
   relayId:       z.string().uuid("L'identifiant du relais est invalide")
                   .nullable().optional(),
-  packageNatures:       z.array(PackageNatureSchema, { error: "Les natures sont obligatoires" })
+  packageNatures: z.array(PackageNatureSchema, { error: "Les natures sont obligatoires" })
                   .min(1, "Un colis doit avoir au moins une nature"),
+  payment:        PaymentInputSchema.optional(),
 })
 
 export const UpdatePackageStatusSchema = z.object({
@@ -26,7 +36,7 @@ export const UpdatePackageStatusSchema = z.object({
 export const PackageFiltersSchema = z.object({
   search:             z.string().optional(),
   state:              z.nativeEnum(PackageStates).optional(),
-  departureDateFrom:  z.coerce.date().optional(),
+  createdAtFrom:      z.coerce.date().optional(),
   departureCountry:   z.coerce.string().optional(),
   destinationCountry: z.coerce.string().optional(),
   currencyId:         z.coerce.string().optional(),

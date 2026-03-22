@@ -17,6 +17,7 @@ import { PrismaPersonRepository } from "../database/PrismaPersonRepository.js";
 import { PrismaAccountRepository } from "../database/PrismaAccountRepository.js";
 import { CreateAccountUseCase } from "../../application/account/CreateAccountUseCase.js";
 import { LoginUseCase } from "../../application/account/LoginUseCase.js";
+import { RefreshTokenUseCase } from "../../application/account/RefreshTokenUseCase.js";
 import { ListPersonsUseCase } from "../../application/person/ListPersonsUseCase.js";
 import { GetPersonByIdUseCase } from "../../application/person/GetPersonByIdUseCase.js";
 import { PrismaNatureRepository } from "../database/PrismaNatureRepository.js";
@@ -24,6 +25,7 @@ import { CreateDepartureUseCase } from "../../application/departure/CreateDepart
 import { ListDeparturesUseCase } from "../../application/departure/ListDeparturesUseCase.js";
 import { GetDepartureByIdUseCase } from "../../application/departure/GetDepartureByIdUseCase.js";
 import { CloseDepartureUseCase } from "../../application/departure/CloseDepartureUseCase.js";
+import { UpdateDepartureStatusUseCase } from "../../application/departure/UpdateDepartureStatusUseCase.js";
 import { DepartureController } from "../http/controllers/DepartureController.js";
 import { AddNatureToPackageUseCase } from "../../application/package/AddNatureToPackageUseCase.js";
 import { RemoveNatureFromPackageUseCase } from "../../application/package/RemoveNatureFromPackageUseCase.js";
@@ -39,6 +41,7 @@ import { ListRelaysUseCase } from "../../application/relay/ListRelaysUseCase.js"
 import { GetRelayByIdUseCase } from "../../application/relay/GetRelayByIdUseCase.js";
 import { GenerateInvoiceUseCase } from "../../application/payment/GenerateInvoiceUseCase.js";
 import { GenerateQuoteUseCase }   from "../../application/package/GenerateQuoteUseCase.js";
+import { GetDashboardUseCase }    from "../../application/dashboard/GetDashboardUseCase.js";
 
 // ── Repositories
 const packageRepository = new PrismaPackageRepository();
@@ -54,17 +57,20 @@ const createPackageUseCase = new CreatePackageUseCase(
   packageRepository,
   departureRepository,
   natureRepository,
+  paymentRepository,
 );
 const listPackagesUseCase = new ListPackagesUseCase(packageRepository);
 const getPackageByIdUseCase = new GetPackageByIdUseCase(packageRepository);
 const updatePackageStatusUseCase = new UpdatePackageStatusUseCase(
   packageRepository,
+  departureRepository,
 );
 const archivePackageUseCase = new ArchivePackageUseCase(packageRepository);
 const deletePackageUseCase = new DeletePackageUseCase(packageRepository);
 const createPersonUseCase = new CreatePersonUseCase(personRepository);
 const createAccountUseCase = new CreateAccountUseCase(accountRepository);
 const loginUseCase = new LoginUseCase(accountRepository);
+const refreshTokenUseCase = new RefreshTokenUseCase(accountRepository);
 const listPersonsUseCase    = new ListPersonsUseCase(personRepository);
 const getPersonByIdUseCase  = new GetPersonByIdUseCase(personRepository);
 
@@ -75,6 +81,10 @@ const getDepartureByIdUseCase = new GetDepartureByIdUseCase(
   departureRepository,
 );
 const closeDepartureUseCase = new CloseDepartureUseCase(departureRepository);
+const updateDepartureStatusUseCase = new UpdateDepartureStatusUseCase(
+  departureRepository,
+  packageRepository,
+);
 const addNatureToPackageUseCase = new AddNatureToPackageUseCase(
   packageRepository,
   natureRepository,
@@ -98,6 +108,7 @@ const getRelayByIdUseCase = new GetRelayByIdUseCase(relayRepository)
 
 const generateInvoiceUseCase = new GenerateInvoiceUseCase(paymentRepository)
 const generateQuoteUseCase   = new GenerateQuoteUseCase(packageRepository)
+const getDashboardUseCase    = new GetDashboardUseCase(packageRepository, paymentRepository, personRepository)
 
 export const container = {
   // Repositories (exposés pour les workers)
@@ -114,6 +125,7 @@ export const container = {
   createPersonUseCase,
   createAccountUseCase,
   loginUseCase,
+  refreshTokenUseCase,
   listPersonsUseCase,
   getPersonByIdUseCase,
   addNatureToPackageUseCase,
@@ -124,6 +136,7 @@ export const container = {
   listDeparturesUseCase,
   getDepartureByIdUseCase,
   closeDepartureUseCase,
+  updateDepartureStatusUseCase,
 
   createPaymentUseCase,
   getPaymentByIdUseCase,
@@ -137,6 +150,7 @@ export const container = {
 
   generateInvoiceUseCase,
   generateQuoteUseCase,
+  getDashboardUseCase,
 
   packageController: new PackageController(),
   departureController: new DepartureController(),

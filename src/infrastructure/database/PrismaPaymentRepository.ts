@@ -1,6 +1,8 @@
 import { type IPaymentRepository, type PaymentFilters } from '../../domain/repositories/IPaymentRepository.js'
 import { type PaymentWithRelations, type CreatePaymentProps } from '../../domain/entities/Payment/payment.types.js'
+import { type CaMensuelItem } from '../../domain/entities/Dashboard/dashboard.types.js'
 import prisma from '../config/prisma.js'
+import { Prisma } from '@prisma/client'
 
 const paymentInclude = {
   currency:      true,
@@ -25,7 +27,6 @@ export class PrismaPaymentRepository implements IPaymentRepository {
         paymentMethodId: props.paymentMethodId,
         packageId:       props.packageId,
         creatorId:       props.creatorId,
-        accepted:        false,
         refunded:        false,
         linkInvoice:     props.linkInvoice     ?? null,
         remise:          props.remise          ?? 0,
@@ -35,6 +36,11 @@ export class PrismaPaymentRepository implements IPaymentRepository {
       },
       include: paymentInclude,
     })
+  }
+
+  async findCurrencyCode(currencyId: string): Promise<string> {
+    const currency = await prisma.currency.findUniqueOrThrow({ where: { id: currencyId } })
+    return currency.code
   }
 
   async findById(id: string): Promise<PaymentWithRelations | null> {
@@ -86,5 +92,29 @@ export class PrismaPaymentRepository implements IPaymentRepository {
       where: { id },
       data:  { linkInvoice: url },
     })
+  }
+
+  // ── Dashboard ──────────────────────────────────────────────────────────────
+
+  async getChiffreAffaires(): Promise<number> {
+    const result = await prisma.payment.aggregate({
+      where: { accepted: true, refunded: false },
+      _sum:  { amountXof: true },
+    })
+    return result._sum.amountXof ?? 0
+  }
+
+  async getCaMensuel(): Promise<CaMensuelItem[]> {
+    return prisma.$queryRaw<CaMensuelItem[]>(Prisma.sql`
+      SELECT
+        TO_CHAR(DATE_TRUNC('month', created_at), 'Mon YYYY') AS mois,
+        COALESCE(SUM(amount_xof), 0)::float                  AS ca
+      FROM payments
+      WHERE accepted   = true
+        AND refunded   = false
+        AND created_at >= NOW() - INTERVAL '12 months'
+      GROUP BY DATE_TRUNC('month', created_at), mois
+      ORDER BY DATE_TRUNC('month', created_at) ASC
+    `)
   }
 }

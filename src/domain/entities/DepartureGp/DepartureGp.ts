@@ -1,5 +1,8 @@
 import { type DepartureGp as PrismaDepartureGp } from '@prisma/client'
 import { type CreateDepartureProps, type DepartureWithRelations } from './departure.types.js'
+import { DepartureStates } from '../../enums/DepartureStates.js'
+
+type DepartureStatusItem = { id: string; state: string; createdAt: Date }
 
 export class DepartureGp {
   id?:                  PrismaDepartureGp['id']
@@ -22,6 +25,8 @@ export class DepartureGp {
   destinationAddress?:  DepartureWithRelations['destinationAddress']
   person?:              DepartureWithRelations['person']
   creator?:             DepartureWithRelations['creator']
+  statuses?:            DepartureStatusItem[]
+
   constructor(props: CreateDepartureProps | DepartureWithRelations) {
     if ('id' in props) this.id = props.id
     this.departureDate        = props.departureDate
@@ -43,10 +48,19 @@ export class DepartureGp {
     if ('destinationAddress' in props) this.destinationAddress = props.destinationAddress
     if ('person' in props)     this.person      = props.person
     if ('creator' in props)    this.creator     = props.creator
+    if ('statuses' in props)   this.statuses    = props.statuses
+  }
+
+  getCurrentState(): DepartureStates {
+    if (!this.statuses || this.statuses.length === 0) return DepartureStates.EN_ATTENTE
+    const sorted = [...this.statuses].sort(
+      (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+    )
+    return sorted[0]!.state as DepartureStates
   }
 
   canBeClosed(): boolean {
-    return !this.isClosed
+    return !this.isClosed && this.getCurrentState() === DepartureStates.EN_ATTENTE
   }
 
   isDeadlinePassed(): boolean {
@@ -54,6 +68,6 @@ export class DepartureGp {
   }
 
   canAddPackage(): boolean {
-    return !this.isClosed && !this.isDeadlinePassed()
+    return !this.isClosed && this.getCurrentState() === DepartureStates.EN_ATTENTE
   }
 }

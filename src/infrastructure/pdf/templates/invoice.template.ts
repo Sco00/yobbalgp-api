@@ -11,7 +11,11 @@ const MARGIN = 50
 const CONTENT_W = PAGE_W - MARGIN * 2
 
 function fmt(amount: number): string {
-  return new Intl.NumberFormat('fr-FR').format(Math.round(amount))
+  return new Intl.NumberFormat('fr-FR').format(Math.round(amount)).replace(/[\u00a0\u202f]/g, ' ')
+}
+
+function fmtPrice(amount: number): string {
+  return new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount)
 }
 
 function fmtDate(date: Date): string {
@@ -112,10 +116,10 @@ export function buildInvoiceContent(data: InvoiceData, doc: InstanceType<typeof 
     const bg = i % 2 === 0 ? WHITE : GRAY
     doc.rect(MARGIN, y, CONTENT_W, 20).fill(bg)
     doc.fillColor(BLACK).font('Helvetica').fontSize(9)
-    doc.text(n.name,                    MARGIN + 8,              y + 5, { width: 150 })
-    doc.text(String(n.quantity),         MARGIN + 160,             y + 5, { width: 40,  align: 'right' })
-    doc.text(`${fmt(n.unitPrice)} XOF`,  MARGIN + 205,             y + 5, { width: 100, align: 'right' })
-    doc.text(`${fmt(n.total)} XOF`,      MARGIN + CONTENT_W - 80, y + 5, { width: 70,  align: 'right' })
+    doc.text(n.name,                          MARGIN + 8,              y + 5, { width: 150 })
+    doc.text(String(n.quantity),               MARGIN + 160,             y + 5, { width: 40,  align: 'right' })
+    doc.text(`${fmtPrice(n.unitPrice)} EUR`,   MARGIN + 205,             y + 5, { width: 100, align: 'right' })
+    doc.text(`${fmtPrice(n.total)} EUR`,       MARGIN + CONTENT_W - 80, y + 5, { width: 70,  align: 'right' })
     y += 20
   })
 
@@ -139,39 +143,54 @@ export function buildInvoiceContent(data: InvoiceData, doc: InstanceType<typeof 
   doc.rect(MARGIN, y, CONTENT_W, 1).fill('#D0D9E8')
   y += 4
 
-  totalRow('Sous-total',              `${fmt(subtotal)} XOF`)
+  totalRow('Sous-total',              `${fmtPrice(subtotal)} EUR`)
   if (data.remise > 0) {
     const label = data.remiseReason ? `Remise (${data.remiseReason})` : 'Remise'
-    totalRow(label, `-${fmt(data.remise)} XOF`)
+    totalRow(label, `-${fmtPrice(data.remise)} EUR`)
   }
   if (data.priceRelay != null && data.priceRelay > 0) {
-    totalRow('Prix relais', `${fmt(data.priceRelay)} XOF`)
+    totalRow('Prix relais', `${fmtPrice(data.priceRelay)} EUR`)
   }
   if (data.insurancePrice > 0) {
-    totalRow('Assurance', `${fmt(data.insurancePrice)} XOF`)
+    totalRow('Assurance', `${fmtPrice(data.insurancePrice)} EUR`)
   }
 
   y += 2
   doc.rect(MARGIN, y, CONTENT_W, 24).fill(NAVY)
   doc.fillColor(WHITE).font('Helvetica-Bold').fontSize(10)
-  doc.text('TOTAL', labelX, y + 6, { width: 150 })
-  doc.text(`${fmt(data.amountXof)} XOF`, valX, y + 6, { width: valW, align: 'right' })
+  doc.text('TOTAL EUR', labelX, y + 6, { width: 150 })
+  doc.text(`${fmtPrice(data.amount)} EUR`, valX, y + 6, { width: valW, align: 'right' })
   y += 24
 
-  // ── Exchange + payment method ─────────────────────────────────────────────
-  y += 10
-  doc.rect(MARGIN, y, CONTENT_W, 40).fill(GRAY)
-  doc
-    .fillColor(BLACK)
-    .font('Helvetica')
-    .fontSize(9)
-    .text(
-      `Soit ${fmt(data.amount)} ${data.currency.symbol} (taux : ${data.exchangeRate})`,
-      MARGIN + 10, y + 6
-    )
-    .text(`Moyen de paiement : ${data.paymentMethod}`, MARGIN + 10, y + 20)
+  // ── Équivalent devise paiement ────────────────────────────────────────────
+  const isEur = data.currency.code === 'EUR'
+  if (!isEur) {
+    const cellW = CONTENT_W / 2
+    const cells = [
+      { label: `Équivalent ${data.currency.code}`, value: `${fmt(data.amountXof)} ${data.currency.code}` },
+      { label: 'Taux appliqué', value: `1 EUR = ${data.exchangeRate} ${data.currency.code}` },
+    ]
+    doc.rect(MARGIN, y, CONTENT_W, 26).fill(GRAY)
+    doc.fillColor(BLACK).font('Helvetica').fontSize(8)
+    cells.forEach((c, i) => {
+      const cx = MARGIN + i * cellW
+      doc.text(c.label, cx + 8,  y + 4,  { width: cellW - 16 })
+      doc.font('Helvetica-Bold')
+      doc.text(c.value, cx + 8,  y + 14, { width: cellW - 16 })
+      doc.font('Helvetica')
+      if (i < cells.length - 1) {
+        doc.rect(cx + cellW, y, 1, 26).fill('#D0D9E8')
+      }
+    })
+    y += 26
+  }
 
-  y += 55
+  // ── Moyen de paiement ─────────────────────────────────────────────────────
+  y += 10
+  doc.rect(MARGIN, y, CONTENT_W, 26).fill(GRAY)
+  doc.fillColor(BLACK).font('Helvetica').fontSize(9)
+  doc.text(`Moyen de paiement : ${data.paymentMethod}`, MARGIN + 10, y + 8)
+  y += 36
 
   // ── PAYÉ stamp ────────────────────────────────────────────────────────────
   doc

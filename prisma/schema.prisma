@@ -29,6 +29,12 @@ enum PackageState {
   RETOURNE
 }
 
+enum DepartureState {
+  EN_ATTENTE
+  EN_TRANSIT
+  ARRIVE
+}
+
 enum AddressType {
   SIMPLE
   RELAIS
@@ -209,8 +215,20 @@ model DepartureGp {
   creator            Account  @relation("DepartureGpCreator", fields: [creatorId], references: [id])
 
   packages Package[]
+  statuses DepartureStatus[]
 
   @@map("departure_gps")
+}
+
+model DepartureStatus {
+  id            String         @id @default(uuid())
+  departureGpId String         @map("departure_gp_id")
+  state         DepartureState @default(EN_ATTENTE)
+  createdAt     DateTime       @default(now()) @map("created_at")
+
+  departureGp DepartureGp @relation(fields: [departureGpId], references: [id], onDelete: Cascade)
+
+  @@map("departure_statuses")
 }
 
 model RoutePartner {
@@ -286,7 +304,7 @@ model Payment {
   amountXof       Float    @map("amount_xof")
   exchangeRate    Float    @map("exchange_rate")
   paymentMethodId String   @map("payment_method_id")
-  accepted        Boolean  @default(false)
+  accepted        Boolean  @default(true)
   refunded        Boolean  @default(false)
   packageId       String   @map("package_id")
   creatorId       String   @map("creator_id")

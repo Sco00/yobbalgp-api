@@ -10,7 +10,11 @@ const MARGIN = 50
 const CONTENT_W = PAGE_W - MARGIN * 2
 
 function fmt(amount: number): string {
-  return new Intl.NumberFormat('fr-FR').format(Math.round(amount))
+  return new Intl.NumberFormat('fr-FR').format(Math.round(amount)).replace(/[\u00a0\u202f]/g, ' ')
+}
+
+function fmtPrice(amount: number): string {
+  return new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount)
 }
 
 function fmtDate(date: Date): string {
@@ -132,8 +136,8 @@ export function buildQuoteContent(data: QuoteData, doc: InstanceType<typeof PDFD
     doc.fillColor(BLACK).font('Helvetica').fontSize(9)
     doc.text(n.name,                              MARGIN + 8,              y + 5, { width: 150 })
     doc.text(String(n.quantity),                   MARGIN + 160,             y + 5, { width: 40,  align: 'right' })
-    doc.text(`${fmt(n.unitPrice)} ${data.currency.code}`, MARGIN + 205, y + 5, { width: 100, align: 'right' })
-    doc.text(`${fmt(n.total)} ${data.currency.code}`,     MARGIN + CONTENT_W - 80, y + 5, { width: 70, align: 'right' })
+    doc.text(`${fmtPrice(n.unitPrice)} ${data.currency.code}`, MARGIN + 205, y + 5, { width: 100, align: 'right' })
+    doc.text(`${fmtPrice(n.total)} ${data.currency.code}`,     MARGIN + CONTENT_W - 80, y + 5, { width: 70, align: 'right' })
     y += 20
   })
 
@@ -146,12 +150,32 @@ export function buildQuoteContent(data: QuoteData, doc: InstanceType<typeof PDFD
   doc.fillColor(WHITE).font('Helvetica-Bold').fontSize(10)
   doc.text('TOTAL ESTIMÉ', MARGIN + CONTENT_W - 240, y + 6, { width: 150 })
   doc.text(
-    `${fmt(data.totalEstime)} ${data.currency.code}`,
+    `${fmtPrice(data.totalEstime)} EUR`,
     MARGIN + CONTENT_W - 80, y + 6,
     { width: 70, align: 'right' }
   )
 
-  y += 38
+  y += 28
+
+  // ── Équivalences multi-devises ────────────────────────────────────────────
+  const equivW = CONTENT_W / 3
+
+  const devises = [
+    { label: 'Équivalent XOF', value: `${fmt(data.totalXof)} FCFA` },
+    { label: 'Équivalent USD', value: `${fmtPrice(data.totalUsd)} USD` },
+    { label: 'Taux indicatif',  value: 'Taux du jour appliqué' },
+  ]
+
+  devises.forEach((d, i) => {
+    const x = MARGIN + i * equivW
+    doc.rect(x, y, equivW, 30).fill(i % 2 === 0 ? GRAY : WHITE)
+    doc.fillColor(NAVY).font('Helvetica-Bold').fontSize(7.5)
+       .text(d.label, x + 6, y + 5, { width: equivW - 8 })
+    doc.fillColor(BLACK).font('Helvetica').fontSize(9)
+       .text(d.value, x + 6, y + 16, { width: equivW - 8 })
+  })
+
+  y += 44
 
   // ── Disclaimer ────────────────────────────────────────────────────────────
   doc

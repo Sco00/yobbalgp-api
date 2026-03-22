@@ -36,6 +36,7 @@ export enum SuccessMessages {
   DEPART_SUPPRIME       = "Départ GP supprimé avec succès",
   DEPART_RECUPERE       = "Départ GP récupéré avec succès",
   DEPARTS_RECUPERES     = "Départs GP récupérés avec succès",
+  DEPART_STATUT_MODIFIE = "État du départ mis à jour avec succès",
 
   // ── Paiement ─────────────────────────────────────────────────────────────────
   PAIEMENT_CREE         = "Paiement enregistré avec succès",

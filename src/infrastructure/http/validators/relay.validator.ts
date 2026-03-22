@@ -9,9 +9,12 @@ export const CreateRelaySchema = z.object({
 export const UpdateRelaySchema = CreateRelaySchema.partial()
 
 export const RelayFiltersSchema = z.object({
-  search: z.string().optional(),
-  page:   z.coerce.number().int().positive().default(1),
-  limit:  z.coerce.number().int().positive().max(100).default(20),
+  search:  z.string().optional(),
+  country: z.string().optional(),
+  region:  z.string().optional(),
+  city:    z.string().optional(),
+  page:    z.coerce.number().int().positive().default(1),
+  limit:   z.coerce.number().int().positive().max(100).default(20),
 })
 
 export type CreateRelayDTO  = z.infer<typeof CreateRelaySchema>

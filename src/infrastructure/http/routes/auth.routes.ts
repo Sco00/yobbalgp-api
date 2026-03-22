@@ -6,6 +6,6 @@ const router     = Router()
 const controller = new AuthController()
 
 router.post('/login', controller.login)
-// router.post('/refresh',             AuthMiddleware.authorizeAdmin,  controller.refresh)
+router.post('/refresh', controller.refresh)
 
 export { router as authRoutes }

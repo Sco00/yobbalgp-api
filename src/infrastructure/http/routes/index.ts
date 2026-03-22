@@ -6,16 +6,22 @@ import { personRoutes }    from "./person.routes.js"
 import { departureRoutes } from "./departure.routes.js"
 import { paymentRoutes } from "./payment.routes.js"
 import { authRoutes } from "./auth.routes.js"
-import { relayRoutes } from './relay.routes.js'
+import { relayRoutes }     from './relay.routes.js'
+import { dashboardRoutes } from './dashboard.routes.js'
+import { natureRoutes }     from './nature.routes.js'
+import { referenceRoutes }  from './reference.routes.js'
 
 const router = express.Router()
 
 router.use("/accounts",   accountRoutes)
 router.use("/packages",   packageRoutes)
-router.use("/persons",     personRoutes)
+router.use("/persons",    personRoutes)
 router.use("/departures", departureRoutes)
-router.use("/payments", paymentRoutes)
-router.use("/auth", authRoutes)
-router.use('/relays', relayRoutes)
+router.use("/payments",   paymentRoutes)
+router.use("/auth",       authRoutes)
+router.use('/relays',     relayRoutes)
+router.use('/dashboard',  dashboardRoutes)
+router.use('/natures',    natureRoutes)
+router.use('/ref',        referenceRoutes)
 
 export default router

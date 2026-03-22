@@ -1,5 +1,4 @@
 import { Package } from "../../domain/entities/Package/Package.js"
-import { NatureInput } from "../../domain/entities/Package/package.types.js"
 import { INatureRepository } from "../../domain/repositories/INatureRepository.js"
 import { IPackageRepository } from "../../domain/repositories/IPackageRepository.js"
 import { PackageNaturesDTO } from "../../infrastructure/http/validators/package.validators.js"
@@ -25,7 +24,9 @@ export class AddNatureToPackageUseCase {
     const nature = await this.natureRepo.findById(input.natureId)
     if (!nature) throw new NotFoundError(ErrorsMessages.NATURE_INTROUVABLE)
 
-    const price = nature.unitPrice * input.quantity
+    const price = nature.unitPrice === 0
+      ? row.departureGp.price * input.quantity
+      : nature.unitPrice * input.quantity
 
     await this.packageRepo.addNature(packageId, {
       natureId: input.natureId,

@@ -156,6 +156,66 @@ async function main() {
   ])
   console.log('✅ Addresses créées')
 
+  // ─── Addresses supplémentaires ────────────────────────────────────────────
+  await Promise.all([
+    prisma.address.upsert({
+      where: { addressHash: 'FR-AURA-LYON-SIMPLE' },
+      update: {},
+      create: { country: 'France', region: 'Auvergne-Rhône-Alpes', city: 'Lyon', type: AddressType.SIMPLE, latitude: 45.7640, longitude: 4.8357, addressHash: 'FR-AURA-LYON-SIMPLE' },
+    }),
+    prisma.address.upsert({
+      where: { addressHash: 'FR-OCC-TOULOUSE-SIMPLE' },
+      update: {},
+      create: { country: 'France', region: 'Occitanie', city: 'Toulouse', type: AddressType.SIMPLE, latitude: 43.6047, longitude: 1.4442, addressHash: 'FR-OCC-TOULOUSE-SIMPLE' },
+    }),
+    prisma.address.upsert({
+      where: { addressHash: 'FR-NAQ-BORDEAUX-SIMPLE' },
+      update: {},
+      create: { country: 'France', region: 'Nouvelle-Aquitaine', city: 'Bordeaux', type: AddressType.SIMPLE, latitude: 44.8378, longitude: -0.5792, addressHash: 'FR-NAQ-BORDEAUX-SIMPLE' },
+    }),
+    prisma.address.upsert({
+      where: { addressHash: 'FR-HDF-LILLE-SIMPLE' },
+      update: {},
+      create: { country: 'France', region: 'Hauts-de-France', city: 'Lille', type: AddressType.SIMPLE, latitude: 50.6292, longitude: 3.0573, addressHash: 'FR-HDF-LILLE-SIMPLE' },
+    }),
+    prisma.address.upsert({
+      where: { addressHash: 'MA-CASABLANCA-CASABLANCA-SIMPLE' },
+      update: {},
+      create: { country: 'Maroc', region: 'Casablanca-Settat', city: 'Casablanca', type: AddressType.SIMPLE, latitude: 33.5731, longitude: -7.5898, addressHash: 'MA-CASABLANCA-CASABLANCA-SIMPLE' },
+    }),
+    prisma.address.upsert({
+      where: { addressHash: 'CI-ABIDJAN-ABIDJAN-SIMPLE' },
+      update: {},
+      create: { country: "Côte d'Ivoire", region: 'Abidjan', city: 'Abidjan', type: AddressType.SIMPLE, latitude: 5.3599, longitude: -4.0083, addressHash: 'CI-ABIDJAN-ABIDJAN-SIMPLE' },
+    }),
+    prisma.address.upsert({
+      where: { addressHash: 'ML-BAMAKO-BAMAKO-SIMPLE' },
+      update: {},
+      create: { country: 'Mali', region: 'District de Bamako', city: 'Bamako', type: AddressType.SIMPLE, latitude: 12.6392, longitude: -8.0029, addressHash: 'ML-BAMAKO-BAMAKO-SIMPLE' },
+    }),
+    prisma.address.upsert({
+      where: { addressHash: 'GN-CONAKRY-CONAKRY-SIMPLE' },
+      update: {},
+      create: { country: 'Guinée', region: 'Conakry', city: 'Conakry', type: AddressType.SIMPLE, latitude: 9.6412, longitude: -13.5784, addressHash: 'GN-CONAKRY-CONAKRY-SIMPLE' },
+    }),
+    prisma.address.upsert({
+      where: { addressHash: 'ES-MADRID-MADRID-SIMPLE' },
+      update: {},
+      create: { country: 'Espagne', region: 'Communauté de Madrid', city: 'Madrid', type: AddressType.SIMPLE, latitude: 40.4168, longitude: -3.7038, addressHash: 'ES-MADRID-MADRID-SIMPLE' },
+    }),
+    prisma.address.upsert({
+      where: { addressHash: 'GB-LONDON-LONDON-SIMPLE' },
+      update: {},
+      create: { country: 'Royaume-Uni', region: 'Greater London', city: 'Londres', type: AddressType.SIMPLE, latitude: 51.5074, longitude: -0.1278, addressHash: 'GB-LONDON-LONDON-SIMPLE' },
+    }),
+    prisma.address.upsert({
+      where: { addressHash: 'BE-BRUSSELS-BRUSSELS-SIMPLE' },
+      update: {},
+      create: { country: 'Belgique', region: 'Bruxelles-Capitale', city: 'Bruxelles', type: AddressType.SIMPLE, latitude: 50.8503, longitude: 4.3517, addressHash: 'BE-BRUSSELS-BRUSSELS-SIMPLE' },
+    }),
+  ])
+  console.log('✅ Adresses supplémentaires créées')
+
   // ─── Persons ──────────────────────────────────────────────────────────────
   const [personAdmin, personGP1, personGP2, personClient1, personClient2, relayPerson] = await Promise.all([
     prisma.person.upsert({

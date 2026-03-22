@@ -34,6 +34,8 @@ export enum ErrorsMessages {
   COLIS_POIDS_INVALIDE = "Le poids du colis doit être supérieur à 0",
   COLIS_STATUT_INVALIDE = "Statut de colis invalide",
   COLIS_STATUT_IDENTIQUE = "Le colis a déjà ce statut",
+  COLIS_DEADLINE_NON_ATTEINTE = "Le statut ne peut pas être modifié avant la deadline du départ",
+  COLIS_MODIFICATION_IMPOSSIBLE = "Le colis ne peut être modifié que lorsque le GP est arrivé",
   COLIS_REFERENCE_INTROUVABLE = "Référence de colis introuvable",
 
   // ── Départ GP ────────────────────────────────────────────────────────────────
@@ -43,6 +45,8 @@ export enum ErrorsMessages {
   DEPART_DATE_INVALIDE = "La date de départ doit être dans le futur",
   DEPART_DEADLINE_INVALIDE = "La deadline doit être antérieure à la date de départ",
   DEPART_GP_OBLIGATOIRE = "Le voyageur GP est obligatoire",
+  DEPART_STATUT_IDENTIQUE = "Ce départ a déjà cet état",
+  DEPART_TRANSITION_INVALIDE = "Cette transition d'état n'est pas autorisée",
 
   // ── Paiement ─────────────────────────────────────────────────────────────────
   PAIEMENT_INTROUVABLE = "Paiement introuvable",

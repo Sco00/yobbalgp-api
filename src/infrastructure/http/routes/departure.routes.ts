@@ -9,6 +9,7 @@ router.use(AuthMiddleware.authenticate)
 router.get('/', AuthMiddleware.authorizeClient, container.departureController.list)
 router.get('/:id', AuthMiddleware.authorizeClient,container.departureController.getById)
 router.post('/', AuthMiddleware.authorizeAdmin,  container.departureController.create)
-router.patch('/:id/close', AuthMiddleware.authorizeAdmin,  container.departureController.close)
+router.patch('/:id/close', AuthMiddleware.authorizeAdmin, container.departureController.close)
+router.patch('/:id/state', AuthMiddleware.authorizeAdmin, container.departureController.updateState)
 
 export { router as departureRoutes }

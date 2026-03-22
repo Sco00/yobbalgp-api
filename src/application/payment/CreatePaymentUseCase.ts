@@ -23,11 +23,15 @@ export class CreatePaymentUseCase {
 
     if (pkg.isArchived) throw new ValidationError(ErrorsMessages.COLIS_DEJA_ARCHIVE)
 
-    const currencyCode = pkg.departureGp.currency.code  // ex: "EUR"
+    const currencyCode = await this.paymentRepo.findCurrencyCode(input.currencyId)
 
-    const exchangeRate = await ExchangeRateService.getRate(currencyCode)
+    const [rateToXof, rateToCurrency] = await Promise.all([
+      ExchangeRateService.getRate('EUR', 'XOF'),
+      currencyCode !== 'EUR' ? ExchangeRateService.getRate('EUR', currencyCode) : Promise.resolve(1),
+    ])
 
-    const amountXof = ExchangeRateService.convertToXof(input.amount, exchangeRate)
+    const amountXof    = ExchangeRateService.convertToXof(input.amount, rateToXof)
+    const exchangeRate = rateToCurrency  // 1 EUR = X {devisePaiement}
 
     // 6. Persister
     return await this.paymentRepo.save({

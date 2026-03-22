@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { CreateDepartureSchema, DepartureFiltersSchema } from '../validators/departure.validator.js'
+import { CreateDepartureSchema, DepartureFiltersSchema, UpdateDepartureStateSchema } from '../validators/departure.validator.js'
 import { container } from '../../config/container.js'
 import { ResponseFormatter } from '../middlewares/ReponseFormatter.js'
 import { SuccessMessages } from '../../../shared/messages/SuccessMessagesFr.js'
@@ -27,5 +27,11 @@ export class DepartureController {
   async close(req: Request, res: Response, next: NextFunction): Promise<void> {
     await container.closeDepartureUseCase.execute(req.params.id as string);
     ResponseFormatter.success(res, null, SuccessMessages.DEPART_FERME);
+  }
+
+  updateState = async (req: Request, res: Response): Promise<void> => {
+    const { state } = UpdateDepartureStateSchema.parse(req.body)
+    await container.updateDepartureStatusUseCase.execute(req.params.id as string, state)
+    ResponseFormatter.success(res, null, SuccessMessages.DEPART_STATUT_MODIFIE)
   }
 }

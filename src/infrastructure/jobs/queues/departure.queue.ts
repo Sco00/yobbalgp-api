@@ -1,18 +1,36 @@
 import { Queue } from 'bullmq'
 import { redis } from '../../config/redis.js'
+import { DepartureStates } from '../../../domain/enums/DepartureStates.js'
 
-const departureQueue = new Queue('departure', { connection: redis, defaultJobOptions: {
+const departureQueue = new Queue('departure', {
+  connection: redis,
+  defaultJobOptions: {
     attempts: 3,
     backoff: { type: 'exponential', delay: 5000 }
-  } })
+  }
+})
 
-export async function scheduleDepartureClose(departureId: string, departureDate: Date): Promise<void> {
-  const delay = departureDate.getTime() - Date.now()
-  if (delay <= 0) return
+export async function scheduleDepartureJobs(
+  departureId: string,
+  departureDate: Date,
+  arrivalDate: Date,
+): Promise<void> {
+  const transitDelay = departureDate.getTime() - Date.now()
+  const arrivalDelay = arrivalDate.getTime() - Date.now()
 
-  await departureQueue.add(
-    'close-departure',
-    { departureId },
-    { delay, jobId: `close-${departureId}` },
-  )
+  if (transitDelay > 0) {
+    await departureQueue.add(
+      'departure-transit',
+      { departureId, state: DepartureStates.EN_TRANSIT },
+      { delay: transitDelay, jobId: `transit-${departureId}` },
+    )
+  }
+
+  if (arrivalDelay > 0) {
+    await departureQueue.add(
+      'departure-arrive',
+      { departureId, state: DepartureStates.ARRIVE },
+      { delay: arrivalDelay, jobId: `arrive-${departureId}` },
+    )
+  }
 }

@@ -54,12 +54,4 @@ export class Package {
   canBeDeleted(): boolean {
     return this.getCurrentStatus() === PackageStates.EN_ATTENTE;
   }
-
-//   addNature(nature: PackageNatureData): void {
-//     this.natures.push(nature);
-//   }
-
-//   addStatus(status: PackageStatusData): void {
-//     this.statuses.push(status);
-//   }
 }

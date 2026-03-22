@@ -5,6 +5,7 @@ import { SECRET_KEY } from '../../infrastructure/config/env.js'
 import { UnauthorizedError } from '../../shared/errors/UnauthorizedError.js'
 import { ErrorsMessages } from '../../shared/messages/ErrorsMessagesFr.js'
 import bcrypt from 'bcryptjs'
+import { Person } from '@prisma/client'
 
 interface LoginResult {
   accessToken: string
@@ -13,7 +14,7 @@ interface LoginResult {
     id:        string
     email:     string
     role:      string
-    personId:  string
+    person:  {firstName: string, lastName: string}
   }
 }
 
@@ -53,7 +54,7 @@ export class LoginUseCase {
         id:       account.id,
         email:    account.email,
         role:     account.role.name,
-        personId: account.personId,
+        person: {firstName: account.person.firstName, lastName: account.person.lastName},
       }
     }
   }

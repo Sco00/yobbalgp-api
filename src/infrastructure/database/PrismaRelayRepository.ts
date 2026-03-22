@@ -1,5 +1,5 @@
 import { type IRelayRepository, type RelayFilters } from '../../domain/repositories/IRelayRepository.js'
-import { type RelayWithRelations, type CreateRelayProps } from '../../domain/entities/Relay/relay.types.js'
+import { type RelayWithRelations, type RelayDetailWithRelations, type CreateRelayProps } from '../../domain/entities/Relay/relay.types.js'
 import { type Prisma } from '@prisma/client'
 import prisma from '../config/prisma.js'
 
@@ -11,12 +11,21 @@ const relayInclude = {
   },
 } satisfies Parameters<typeof prisma.relay.findUnique>[0]['include']
 
-const relayIncludeWithPackages = {
-  person:   true,
-  address:  true,
-  packages: true,
+const relayDetailInclude = {
+  person:  true,
+  address: true,
   _count: {
     select: { packages: true },
+  },
+  packages: {
+    include: {
+      statuses:    true,
+      person:      true,
+      natures:     { include: { nature: true } },
+      payments:    { include: { currency: true, paymentMethod: true } },
+      departureGp: { include: { departureAddress: true, destinationAddress: true } },
+    },
+    orderBy: { createdAt: 'desc' as const },
   },
 } satisfies Parameters<typeof prisma.relay.findUnique>[0]['include']
 
@@ -36,8 +45,15 @@ export class PrismaRelayRepository implements IRelayRepository {
   async findById(id: string): Promise<RelayWithRelations | null> {
     return await prisma.relay.findUnique({
       where:   { id },
-      include: relayIncludeWithPackages,
-    }) as RelayWithRelations | null
+      include: relayInclude,
+    })
+  }
+
+  async findDetailById(id: string): Promise<RelayDetailWithRelations | null> {
+    return await prisma.relay.findUnique({
+      where:   { id },
+      include: relayDetailInclude,
+    })
   }
 
   async findByAddressId(addressId: string): Promise<RelayWithRelations | null> {
@@ -48,12 +64,20 @@ export class PrismaRelayRepository implements IRelayRepository {
   }
 
   async findAll(filters: RelayFilters = {}): Promise<{ props: RelayWithRelations[]; total: number }> {
-    const { search, page = 1, limit = 20 } = filters
+    const { search, country, region, city, page = 1, limit = 20 } = filters
 
     const where: Prisma.RelayWhereInput = {
-      ...(search && {
-        name: { contains: search, mode: 'insensitive' }
-      })
+      AND: [
+        ...(search ? [{
+          OR: [
+            { person: { firstName: { contains: search, mode: 'insensitive' as const } } },
+            { person: { lastName:  { contains: search, mode: 'insensitive' as const } } },
+          ],
+        }] : []),
+        ...(country ? [{ address: { country: { contains: country, mode: 'insensitive' as const } } }] : []),
+        ...(region  ? [{ address: { region:  { contains: region,  mode: 'insensitive' as const } } }] : []),
+        ...(city    ? [{ address: { city:    { contains: city,    mode: 'insensitive' as const } } }] : []),
+      ],
     }
 
     const [props, total] = await prisma.$transaction([
