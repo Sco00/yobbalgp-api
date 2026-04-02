@@ -40,6 +40,7 @@ export const PackageFiltersSchema = z.object({
   departureCountry:   z.coerce.string().optional(),
   destinationCountry: z.coerce.string().optional(),
   currencyId:         z.coerce.string().optional(),
+  unpaidOnly:         z.coerce.boolean().optional(),
   page:               z.coerce.number().int().positive().default(1),
   limit:              z.coerce.number().int().positive().max(100).default(10),
 })

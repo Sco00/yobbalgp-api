@@ -14,9 +14,11 @@ export async function scheduleDepartureJobs(
   departureId: string,
   departureDate: Date,
   arrivalDate: Date,
+  deadline: Date,
 ): Promise<void> {
-  const transitDelay = departureDate.getTime() - Date.now()
-  const arrivalDelay = arrivalDate.getTime() - Date.now()
+  const transitDelay  = departureDate.getTime() - Date.now()
+  const arrivalDelay  = arrivalDate.getTime()   - Date.now()
+  const deadlineDelay = deadline.getTime()       - Date.now()
 
   if (transitDelay > 0) {
     await departureQueue.add(
@@ -31,6 +33,14 @@ export async function scheduleDepartureJobs(
       'departure-arrive',
       { departureId, state: DepartureStates.ARRIVE },
       { delay: arrivalDelay, jobId: `arrive-${departureId}` },
+    )
+  }
+
+  if (deadlineDelay > 0) {
+    await departureQueue.add(
+      'departure-close',
+      { departureId },
+      { delay: deadlineDelay, jobId: `close-${departureId}` },
     )
   }
 }

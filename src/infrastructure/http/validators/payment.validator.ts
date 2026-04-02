@@ -13,12 +13,14 @@ export const CreatePaymentSchema = z.object({
 });
 
 export const PaymentFiltersSchema = z.object({
-  packageId:  z.string().uuid().optional(),
-  accepted:   z.coerce.boolean().optional(),
-  refunded:   z.coerce.boolean().optional(),
-  currencyId: z.string().uuid().optional(),
-  page:       z.coerce.number().int().positive().default(1),
-  limit:      z.coerce.number().int().positive().max(100).default(20),
+  packageId:       z.string().uuid().optional(),
+  accepted:        z.enum(['true', 'false']).transform((v) => v === 'true').optional(),
+  refunded:        z.enum(['true', 'false']).transform((v) => v === 'true').optional(),
+  currencyId:      z.string().uuid().optional(),
+  paymentMethodId: z.string().uuid().optional(),
+  createdAtFrom:   z.coerce.date().optional(),
+  page:            z.coerce.number().int().positive().default(1),
+  limit:           z.coerce.number().int().positive().max(100).default(10),
 })
 
 export const UpdatePaymentSchema = CreatePaymentSchema.partial();

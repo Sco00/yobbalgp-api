@@ -1,10 +1,10 @@
-import { Package } from "../../domain/entities/Package/Package.js"
-import { INatureRepository } from "../../domain/repositories/INatureRepository.js"
-import { IPackageRepository } from "../../domain/repositories/IPackageRepository.js"
-import { PackageNaturesDTO } from "../../infrastructure/http/validators/package.validators.js"
-import { ValidationError } from "../../shared/errors/BadRequestError.js"
-import { NotFoundError } from "../../shared/errors/NotFoundError.js"
-import { ErrorsMessages } from "../../shared/messages/ErrorsMessagesFr.js"
+import { Package }                from '../../domain/entities/Package/Package.js'
+import { type INatureRepository } from '../../domain/repositories/INatureRepository.js'
+import { type IPackageRepository } from '../../domain/repositories/IPackageRepository.js'
+import { type AddNatureInput }    from '../dtos/package.dtos.js'
+import { ValidationError }        from '../../shared/errors/BadRequestError.js'
+import { NotFoundError }          from '../../shared/errors/NotFoundError.js'
+import { ErrorsMessages }         from '../../shared/messages/ErrorsMessagesFr.js'
 
 export class AddNatureToPackageUseCase {
   constructor(
@@ -12,7 +12,7 @@ export class AddNatureToPackageUseCase {
     private readonly natureRepo:  INatureRepository,
   ) {}
 
-  async execute(packageId: string, input: PackageNaturesDTO): Promise<void> {
+  async execute(packageId: string, input: AddNatureInput): Promise<void> {
     const row = await this.packageRepo.findById(packageId)
     if (!row) throw new NotFoundError(ErrorsMessages.COLIS_INTROUVABLE)
 

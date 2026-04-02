@@ -34,7 +34,7 @@ export const errorHandler = (err: unknown, req: Request, res: Response,  _next: 
   }
 
   // Erreur inattendue
-  console.error("[UNHANDLED ERROR]", err);
+  console.warn("[UNHANDLED ERROR]", err);
   res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
     success: false,
     error: {

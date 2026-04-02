@@ -1,10 +1,10 @@
 import { Router } from 'express'
 import { AccountController } from '../controllers/AccountController.js'
 import { AuthMiddleware }    from '../middlewares/AuthMiddleware.js'
+import { container } from '../../config/container.js'
 
 const router     = Router()
-const controller = new AccountController()
 
-router.post('/', AuthMiddleware.authenticate, AuthMiddleware.authorizeAdmin, controller.create)
+router.post('/', AuthMiddleware.authenticate, AuthMiddleware.authorizeAdmin, container.accountController.create)
 
 export { router as accountRoutes }

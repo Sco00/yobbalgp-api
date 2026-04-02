@@ -1,8 +1,8 @@
 import { IPackageRepository, PackageFilters } from "../../domain/repositories/IPackageRepository.js"
-import { PackageWithRelations } from "../../domain/entities/Package/package.types.js"
+import { PackageListItem } from "../../domain/entities/Package/package.types.js"
 
 interface ListPackagesResult {
-  props:  PackageWithRelations[]
+  props:  PackageListItem[]
   total: number
   page:  number
   limit: number

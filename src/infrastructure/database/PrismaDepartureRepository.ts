@@ -1,17 +1,9 @@
 import { type IDepartureRepository, type DepartureFilters } from '../../domain/repositories/IDepartureRepository.js'
-import { type DepartureWithRelations, type CreateDepartureProps, type DepartureWithPackages } from '../../domain/entities/DepartureGp/departure.types.js'
+import { type DepartureWithRelations, type DepartureListItem, type CreateDepartureProps, type DepartureWithPackages, departureInclude, departureListInclude } from '../../domain/entities/DepartureGp/departure.types.js'
 import { type DepartureStates } from '../../domain/enums/DepartureStates.js'
 import { type Prisma } from '@prisma/client'
 import prisma from '../config/prisma.js'
 
-const departureInclude = {
-  currency:           true,
-  departureAddress:   true,
-  destinationAddress: true,
-  person:             true,
-  creator:            true,
-  statuses:           true,
-} as const
 
 const departureWithPackagesInclude = {
   currency:           true,
@@ -46,18 +38,11 @@ export class PrismaDepartureRepository implements IDepartureRepository {
     })
   }
 
-  async findById(id: string): Promise<DepartureWithRelations | null> {
-    return await prisma.departureGp.findUnique({ where: { id }, include: departureInclude })
+  async findById(id: string): Promise<DepartureWithPackages | null> {
+    return await prisma.departureGp.findUnique({ where: { id }, include: departureWithPackagesInclude }) as DepartureWithPackages | null
   }
 
-  async findWithPackages(id: string): Promise<DepartureWithPackages | null> {
-    return await prisma.departureGp.findUnique({
-      where:   { id },
-      include: departureWithPackagesInclude,
-    }) as DepartureWithPackages | null
-  }
-
-  async findAll(filters: DepartureFilters = { page: 1, limit: 10 }): Promise<{ props: DepartureWithRelations[]; total: number }> {
+  async findAll(filters: DepartureFilters = { page: 1, limit: 10 }): Promise<{ props: DepartureListItem[]; total: number }> {
     const {
       departureCountry,
       destinationCountry,
@@ -100,15 +85,15 @@ export class PrismaDepartureRepository implements IDepartureRepository {
     const [data, total] = await prisma.$transaction([
       prisma.departureGp.findMany({
         where,
-        include: departureInclude,
-        orderBy: { departureDate: 'desc' },
+        include: departureListInclude,
+        orderBy: { isClosed: 'asc' },
         skip:    (page - 1) * limit,
         take:    limit,
       }),
       prisma.departureGp.count({ where }),
     ])
 
-    return { props: data as DepartureWithRelations[], total }
+    return { props: data as unknown as DepartureListItem[], total }
   }
 
   async update(id: string, props: Partial<DepartureWithRelations>): Promise<void> {
@@ -124,8 +109,6 @@ export class PrismaDepartureRepository implements IDepartureRepository {
   }
 
   async updateState(id: string, state: DepartureStates): Promise<void> {
-    await prisma.departureStatus.create({
-      data: { departureGpId: id, state }
-    })
+    await prisma.departureStatus.create({ data: { departureGpId: id, state } })
   }
 }

@@ -12,7 +12,7 @@ const relayInclude = {
 } satisfies Parameters<typeof prisma.relay.findUnique>[0]['include']
 
 const relayDetailInclude = {
-  person:  true,
+  person:  { include: { personType: true } },
   address: true,
   _count: {
     select: { packages: true },
@@ -64,7 +64,7 @@ export class PrismaRelayRepository implements IRelayRepository {
   }
 
   async findAll(filters: RelayFilters = {}): Promise<{ props: RelayWithRelations[]; total: number }> {
-    const { search, country, region, city, page = 1, limit = 20 } = filters
+    const { search, country, region, city, page = 1, limit = 10 } = filters
 
     const where: Prisma.RelayWhereInput = {
       AND: [

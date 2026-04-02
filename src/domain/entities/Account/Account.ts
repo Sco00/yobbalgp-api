@@ -1,15 +1,13 @@
-import { Account as PrismaAccount } from '@prisma/client'
 import { CreateAccountProps, AccountWithRelations } from './account.types.js'
 
 export class Account {
-  id?:       string
-  email:     PrismaAccount['email']
-  password:  PrismaAccount['password']
-  personId:  PrismaAccount['personId']
-  roleId:    PrismaAccount['roleId']
-  createdAt?: PrismaAccount['createdAt']
+  id?:      string
+  email:    string
+  password: string
+  personId: string
+  roleId:   string
+  createdAt?: Date
 
-  // Relations optionnelles
   role?:   AccountWithRelations['role']
   person?: AccountWithRelations['person']
 
@@ -24,7 +22,6 @@ export class Account {
     this.personId = props.personId
     this.roleId   = props.roleId
   }
-
 
   getFullName(): string {
     return this.person

@@ -1,14 +1,17 @@
 import { type IPaymentRepository } from '../../domain/repositories/IPaymentRepository.js'
-import { PdfService }              from '../../shared/services/PdfService.js'
+import { type PdfService }         from '../../shared/services/PdfService.js'
 import { CloudinaryService }       from '../../shared/services/CloudinaryService.js'
 import { ValidationError }         from '../../shared/errors/BadRequestError.js'
 import { NotFoundError }           from '../../shared/errors/NotFoundError.js'
 import { ErrorsMessages }          from '../../shared/messages/ErrorsMessagesFr.js'
-import { type InvoiceData }        from '../../infrastructure/pdf/types/pdf.types.js'
+import { type InvoiceData }        from '../../shared/types/PdfTypes.js'
 
 export class GenerateInvoiceUseCase {
 
-  constructor(private readonly paymentRepo: IPaymentRepository) {}
+  constructor(
+    private readonly paymentRepo: IPaymentRepository,
+    private readonly pdfService:  PdfService,
+  ) {}
 
   async execute(paymentId: string): Promise<string> {
     const payment = await this.paymentRepo.findById(paymentId)
@@ -39,21 +42,21 @@ export class GenerateInvoiceUseCase {
         unitPrice: pn.price / pn.quantity,
         total:     pn.price,
       })),
-      remise:        payment.remise,
-      remiseReason:  payment.remiseReason,
-      amount:        payment.amount,
+      remise:         payment.remise,
+      remiseReason:   payment.remiseReason,
+      amount:         payment.amount,
       currency: {
         code:   payment.currency.code,
         symbol: payment.currency.symbol,
       },
-      amountXof:     payment.amountXof,
-      exchangeRate:  payment.exchangeRate,
-      paymentMethod: payment.paymentMethod.name,
-      priceRelay:    payment.priceRelay,
+      amountXof:      payment.amountXof,
+      exchangeRate:   payment.exchangeRate,
+      paymentMethod:  payment.paymentMethod.name,
+      priceRelay:     payment.priceRelay,
       insurancePrice: payment.insurancePrice,
     }
 
-    const buffer = await PdfService.generateInvoice(invoiceData)
+    const buffer = await this.pdfService.generateInvoice(invoiceData)
     const url    = await CloudinaryService.uploadPdf(buffer, invoiceNumber)
 
     await this.paymentRepo.updateLinkInvoice(paymentId, url)

@@ -1,13 +1,16 @@
 import { type IPackageRepository } from '../../domain/repositories/IPackageRepository.js'
-import { PdfService }              from '../../shared/services/PdfService.js'
+import { type PdfService }         from '../../shared/services/PdfService.js'
 import { NotFoundError }           from '../../shared/errors/NotFoundError.js'
 import { ErrorsMessages }          from '../../shared/messages/ErrorsMessagesFr.js'
-import { type QuoteData }          from '../../infrastructure/pdf/types/pdf.types.js'
+import { type QuoteData }          from '../../shared/types/PdfTypes.js'
 import { ExchangeRateService }     from '../../shared/services/ExchangeRateService.js'
 
 export class GenerateQuoteUseCase {
 
-  constructor(private readonly packageRepo: IPackageRepository) {}
+  constructor(
+    private readonly packageRepo: IPackageRepository,
+    private readonly pdfService:  PdfService,
+  ) {}
 
   async execute(packageId: string): Promise<Buffer> {
     const pkg = await this.packageRepo.findById(packageId)
@@ -16,7 +19,6 @@ export class GenerateQuoteUseCase {
     const { departureGp } = pkg
     const totalEstime = pkg.natures.reduce((sum, pn) => sum + pn.price, 0)
 
-    // Les natures sont toujours en EUR — on convertit vers XOF et USD
     const [rateXof, rateUsd] = await Promise.all([
       ExchangeRateService.getRate('EUR', 'XOF'),
       ExchangeRateService.getRate('EUR', 'USD'),
@@ -53,6 +55,6 @@ export class GenerateQuoteUseCase {
       },
     }
 
-    return PdfService.generateQuote(quoteData)
+    return this.pdfService.generateQuote(quoteData)
   }
 }

@@ -1,29 +1,13 @@
 import { type IPackageRepository, type PackageFilters } from '../../domain/repositories/IPackageRepository.js'
-import { PackageWithRelations, CreatePackageProps, NatureInput } from '../../domain/entities/Package/package.types.js'
+import { PackageWithRelations, PackageListItem, packageInclude, packageListInclude, CreatePackageProps, NatureInput } from '../../domain/entities/Package/package.types.js'
 import { type PackageStates } from '../../domain/enums/PackageStates.js'
 import { type ColisParRouteItem, type StatutsParMoisItem, type DerniersColisItem } from '../../domain/entities/Dashboard/dashboard.types.js'
 import prisma from '../config/prisma.js'
 import { Prisma } from '@prisma/client'
 
-const packageInclude = {
-  creator:  true,
-  person:   { include: { personType: true } },
-  relay:    { include: { address: true } },
-  natures:  { include: { nature: true } },
-  statuses: true,
-  payments: true,
-  departureGp: {
-    include: {
-      currency:           true,
-      departureAddress:   true,
-      destinationAddress: true,
-      person:             true,
-    },
-  },
-} satisfies Parameters<typeof prisma.package.findUnique>[0]['include']
 
 export class PrismaPackageRepository implements IPackageRepository {
-    async save(props: CreatePackageProps): Promise<PackageWithRelations> {
+  async save(props: CreatePackageProps): Promise<PackageWithRelations> {
     return await prisma.package.create({
       data: {
         reference:     props.reference!,
@@ -54,7 +38,7 @@ export class PrismaPackageRepository implements IPackageRepository {
     })
   }
 
-    async findAll(filters: PackageFilters = {page: 1, limit: 10}): Promise<{ props: PackageWithRelations[]; total: number }> {
+    async findAll(filters: PackageFilters = {page: 1, limit: 10}): Promise<{ props: PackageListItem[]; total: number }> {
         const {
             search,
             state,
@@ -62,6 +46,7 @@ export class PrismaPackageRepository implements IPackageRepository {
             departureCountry,
             destinationCountry,
             currencyId,
+            unpaidOnly,
             page,
             limit,
         } = filters
@@ -82,15 +67,16 @@ export class PrismaPackageRepository implements IPackageRepository {
                     ]}},
                 ],
             }),
-            ...(state        && { statuses: { some: { state } } }),
+            ...(state        && { currentState: state }),
             ...(createdAtFrom && { createdAt: { gte: createdAtFrom } }),
             ...(Object.keys(departureGpFilter).length > 0 && { departureGp: departureGpFilter }),
+            ...(unpaidOnly   && { payments: { none: { accepted: true, refunded: false } } }),
         }
 
         const [data, total] = await prisma.$transaction([
             prisma.package.findMany({
             where,
-            include: packageInclude,
+            include: packageListInclude,
             orderBy: { createdAt: 'desc' },
             skip:    (page - 1) * limit,
             take:    limit,
@@ -98,13 +84,14 @@ export class PrismaPackageRepository implements IPackageRepository {
             prisma.package.count({ where }),
         ])
 
-        return { props: data as PackageWithRelations[], total }
+        return { props: data, total }
     }
 
     async updateStatus(packageId: string, state: PackageStates): Promise<void> {
-    await prisma.packageStatus.create({
-      data: { packageId, state }
-    })
+    await prisma.$transaction([
+      prisma.packageStatus.create({ data: { packageId, state } }),
+      prisma.package.update({ where: { id: packageId }, data: { currentState: state } }),
+    ])
   }
 
   async archive(packageId: string): Promise<void> {

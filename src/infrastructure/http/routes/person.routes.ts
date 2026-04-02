@@ -1,15 +1,15 @@
 import { Router } from 'express'
 import { PersonController } from '../controllers/PersonController.js'
 import { AuthMiddleware }   from '../middlewares/AuthMiddleware.js'
+import { container } from '../../config/container.js'
 
 const router     = Router()
-const controller = new PersonController()
 
 router.use(AuthMiddleware.authenticate)
 
-router.get('/types', AuthMiddleware.authorizeAdmin, controller.listTypes)
-router.get('/',      AuthMiddleware.authorizeAdmin, controller.list)
-router.get('/:id',   AuthMiddleware.authorizeAdmin, controller.getById)
-router.post('/',     AuthMiddleware.authorizeAdmin, controller.create)
+router.get('/types', AuthMiddleware.authorizeAdmin, container.personController.listTypes)
+router.get('/',      AuthMiddleware.authorizeAdmin, container.personController.list)
+router.get('/:id',   AuthMiddleware.authorizeAdmin, container.personController.getById)
+router.post('/',     AuthMiddleware.authorizeAdmin, container.personController.create)
 
 export { router as personRoutes }

@@ -1,4 +1,4 @@
-import { PersonWithRelations, PersonDetailWithRelations, CreatePersonProps } from '../entities/Person/person.types.js'
+import { PersonWithRelations, PersonListItem, PersonDetailWithRelations, CreatePersonProps } from '../entities/Person/person.types.js'
 import { type IRepository } from './IRepository.js'
 import { Person } from '@prisma/client'
 import { type RepartitionClients, type TopClientItem } from '../entities/Dashboard/dashboard.types.js'
@@ -17,7 +17,7 @@ export interface IPersonRepository
   update(id: string, props: Partial<Person>):           Promise<void>
   findByMobile(mobile: string):                         Promise<PersonWithRelations | null>
   findDetailById(id: string):                           Promise<PersonDetailWithRelations | null>
-  findAll(filters: PersonFilters): Promise<{ props: PersonWithRelations[]; total: number }>
+  findAll(filters: PersonFilters): Promise<{ props: PersonListItem[]; total: number }>
 
   // Dashboard
   getTotalClients():        Promise<number>

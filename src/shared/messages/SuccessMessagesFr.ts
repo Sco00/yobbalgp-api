@@ -80,4 +80,7 @@ export enum SuccessMessages {
 
   // ── Statistiques ─────────────────────────────────────────────────────────────
   STATISTIQUES_RECUPEREES = "Statistiques récupérées avec succès",
+
+  // ── Dashboard ────────────────────────────────────────────────────────────────
+  DASHBOARD_RECUPERE      = "Dashboard récupéré avec succès",
 }

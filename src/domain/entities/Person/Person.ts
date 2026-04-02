@@ -1,13 +1,12 @@
-import { type Person as PrismaPerson } from '@prisma/client'
 import { CreatePersonProps, PersonWithRelations } from './person.types.js'
 
 export class Person {
   id?:          string
-  firstName:    PrismaPerson['firstName']
-  lastName:     PrismaPerson['lastName']
-  mobile:       PrismaPerson['mobile']
-  personTypeId: PrismaPerson['personTypeId']
-  createdAt?:   PrismaPerson['createdAt']
+  firstName:    string
+  lastName:     string
+  mobile:       string
+  personTypeId: string
+  createdAt?:   Date
 
   personType?: PersonWithRelations['personType']
 
@@ -25,5 +24,4 @@ export class Person {
   getFullName(): string {
     return `${this.firstName} ${this.lastName}`
   }
-
 }

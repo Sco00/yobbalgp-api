@@ -1,33 +1,39 @@
 import { Prisma } from "@prisma/client";
-import { CreateDepartureDTO } from "../../../infrastructure/http/validators/departure.validator.js";
+import { type CreateDepartureInput } from "../../../application/dtos/departure.dtos.js";
 
-export type DepartureWithRelations = Prisma.DepartureGpGetPayload<{
-  include: {
-    currency:           true
-    departureAddress:   true
-    destinationAddress: true
-    person:             true
-    creator:            true
-    statuses:           true
-  }
-}>
+export const departureInclude = {
+  currency:           true,
+  departureAddress:   true,
+  destinationAddress: true,
+  person:             { include: { personType: true } },
+  creator:            true,
+  statuses:           true,
+} as const
 
-export type DepartureWithPackages = Prisma.DepartureGpGetPayload<{
-  include: {
-    currency:           true
-    departureAddress:   true
-    destinationAddress: true
-    person:             true
-    creator:            true
-    statuses:           true
-    packages: {
-      include: {
-        statuses: true
-      }
-    }
-  }
-}>
+export const departureListInclude = {
+  currency:           true,
+  departureAddress:   true,
+  destinationAddress: true,
+  person:             true,
+  statuses:           true,
+} as const
 
-export type CreateDepartureProps = CreateDepartureDTO & {
-  creatorId:  string
-}
+export const departureWithPackagesInclude = {
+  currency:           true,
+  departureAddress:   true,
+  destinationAddress: true,
+  person:             { include: { personType: true } },
+  creator:            true,
+  statuses:           true,
+  packages: {
+    include: {
+      statuses: true,
+    },
+  },
+} as const
+
+export type DepartureWithRelations = Prisma.DepartureGpGetPayload<{ include: typeof departureInclude }>
+export type DepartureListItem      = Prisma.DepartureGpGetPayload<{ include: typeof departureListInclude }>
+export type DepartureWithPackages  = Prisma.DepartureGpGetPayload<{ include: typeof departureWithPackagesInclude }>
+
+export type CreateDepartureProps = CreateDepartureInput

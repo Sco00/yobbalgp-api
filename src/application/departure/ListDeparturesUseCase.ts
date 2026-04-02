@@ -1,8 +1,8 @@
 import { IDepartureRepository, DepartureFilters } from '../../domain/repositories/IDepartureRepository.js'
-import { type DepartureWithRelations } from '../../domain/entities/DepartureGp/departure.types.js'
+import { type DepartureListItem } from '../../domain/entities/DepartureGp/departure.types.js'
 
 interface ListDeparturesResult {
-  props:  DepartureWithRelations[]
+  props:  DepartureListItem[]
   total: number
   page:  number
   limit: number

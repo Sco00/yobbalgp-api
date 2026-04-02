@@ -1,24 +1,23 @@
-import { type DepartureGp as PrismaDepartureGp } from '@prisma/client'
 import { type CreateDepartureProps, type DepartureWithRelations } from './departure.types.js'
 import { DepartureStates } from '../../enums/DepartureStates.js'
 
 type DepartureStatusItem = { id: string; state: string; createdAt: Date }
 
 export class DepartureGp {
-  id?:                  PrismaDepartureGp['id']
-  departureDate:        PrismaDepartureGp['departureDate']
-  deadline:             PrismaDepartureGp['deadline']
-  arrivalDate?:         PrismaDepartureGp['arrivalDate']
-  price:                PrismaDepartureGp['price']
-  priceGp:              PrismaDepartureGp['priceGp']
-  currencyId:           PrismaDepartureGp['currencyId']
-  departureAddressId:   PrismaDepartureGp['departureAddressId']
-  destinationAddressId: PrismaDepartureGp['destinationAddressId']
-  personId?:            PrismaDepartureGp['personId']
-  creatorId:            PrismaDepartureGp['creatorId']
-  insurancePrice?:      PrismaDepartureGp['insurancePrice']
-  isClosed:             PrismaDepartureGp['isClosed']
-  createdAt?:           PrismaDepartureGp['createdAt']
+  id?:                  string
+  departureDate:        Date
+  deadline:             Date
+  arrivalDate?:         Date
+  price:                number
+  priceGp:              number
+  currencyId:           string
+  departureAddressId:   string
+  destinationAddressId: string
+  personId?:            string | null
+  creatorId:            string
+  insurancePrice?:      number | null
+  isClosed:             boolean
+  createdAt?:           Date
 
   currency?:            DepartureWithRelations['currency']
   departureAddress?:    DepartureWithRelations['departureAddress']

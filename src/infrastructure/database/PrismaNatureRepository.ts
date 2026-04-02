@@ -6,4 +6,8 @@ export class PrismaNatureRepository implements INatureRepository {
   async findById(id: string): Promise<Nature | null> {
     return await prisma.nature.findUnique({ where: { id } })
   }
+
+  async findAll(): Promise<Nature[]> {
+    return await prisma.nature.findMany({ orderBy: { name: 'asc' } })
+  }
 }

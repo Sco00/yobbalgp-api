@@ -1,8 +1,8 @@
 import { type IPaymentRepository, type PaymentFilters } from '../../domain/repositories/IPaymentRepository.js'
-import { type PaymentWithRelations } from '../../domain/entities/Payment/payment.types.js'
+import { type PaymentListItem } from '../../domain/entities/Payment/payment.types.js'
 
 interface ListPaymentsResult {
-  props:  PaymentWithRelations[]
+  props:  PaymentListItem[]
   total: number
   page:  number
   limit: number

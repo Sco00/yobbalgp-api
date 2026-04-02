@@ -1,4 +1,4 @@
-import { type PackageWithRelations, CreatePackageProps, NatureInput } from '../entities/Package/package.types.js'
+import { type PackageWithRelations, type PackageListItem, CreatePackageProps, NatureInput } from '../entities/Package/package.types.js'
 import { type PackageStates } from '../enums/PackageStates.js'
 import { IRepository } from './IRepository.js'
 import { type ColisParRouteItem, type StatutsParMoisItem, type DerniersColisItem } from '../entities/Dashboard/dashboard.types.js'
@@ -10,14 +10,15 @@ export interface PackageFilters {
     departureCountry?:   string | undefined
     destinationCountry?: string | undefined
     currencyId?:         string | undefined
+    unpaidOnly?:         boolean | undefined
     page:                number
     limit:               number
 }
 
-export interface IPackageRepository extends Omit<IRepository<PackageWithRelations, PackageFilters>, 'save' | 'update'>  {
+export interface IPackageRepository extends Omit<IRepository<PackageWithRelations, PackageFilters>, 'save' | 'update' | 'findAll'>  {
   save(props: CreatePackageProps): Promise<PackageWithRelations>
   findById(id: string): Promise<PackageWithRelations | null>
-  findAll(filters?: PackageFilters): Promise<{ props: PackageWithRelations[]; total: number }>
+  findAll(filters?: PackageFilters): Promise<{ props: PackageListItem[]; total: number }>
   updateStatus(packageId: string, state: PackageStates): Promise<void>
   archive(packageId: string): Promise<void>
   delete(packageId: string): Promise<void>

@@ -1,25 +1,22 @@
-import {  IPackageRepository } from "../../domain/repositories/IPackageRepository.js"
-import { IDepartureRepository } from "../../domain/repositories/IDepartureRepository.js"
-import { IPaymentRepository } from "../../domain/repositories/IPaymentRepository.js"
-import { CreatePackageProps, PackageWithRelations } from "../../domain/entities/Package/package.types.js"
-import { NotFoundError } from "../../shared/errors/NotFoundError.js"
-import { ValidationError } from "../../shared/errors/BadRequestError.js"
-import { ErrorsMessages } from "../../shared/messages/ErrorsMessagesFr.js"
-import { CreatePackageDTO } from "../../infrastructure/http/validators/package.validators.js"
-import { generateReference } from "../../shared/utils/generateReference.js"
-import { INatureRepository } from "../../domain/repositories/INatureRepository.js"
-import { schedulePackageDeletion } from '../../infrastructure/jobs/queues/package.queue.js'
-import { ExchangeRateService } from '../../shared/services/ExchangeRateService.js'
-
-interface CreatePackageInput extends CreatePackageDTO {
-  creatorId: string
-}
+import { type IPackageRepository }    from '../../domain/repositories/IPackageRepository.js'
+import { type IDepartureRepository }  from '../../domain/repositories/IDepartureRepository.js'
+import { type IPaymentRepository }    from '../../domain/repositories/IPaymentRepository.js'
+import { type INatureRepository }     from '../../domain/repositories/INatureRepository.js'
+import { type IJobScheduler }         from '../services/IJobScheduler.js'
+import { type CreatePackageInput }    from '../dtos/package.dtos.js'
+import { type CreatePackageProps, type PackageWithRelations } from '../../domain/entities/Package/package.types.js'
+import { NotFoundError }              from '../../shared/errors/NotFoundError.js'
+import { ValidationError }            from '../../shared/errors/BadRequestError.js'
+import { ErrorsMessages }             from '../../shared/messages/ErrorsMessagesFr.js'
+import { generateReference }          from '../../shared/utils/generateReference.js'
+import { ExchangeRateService }        from '../../shared/services/ExchangeRateService.js'
 
 export class CreatePackageUseCase {
   constructor(
     private readonly packageRepo:   IPackageRepository,
     private readonly departureRepo: IDepartureRepository,
     private readonly natureRepo:    INatureRepository,
+    private readonly jobScheduler:  IJobScheduler,
     private readonly paymentRepo?:  IPaymentRepository,
   ) {}
 
@@ -53,11 +50,11 @@ export class CreatePackageUseCase {
     const props: CreatePackageProps = {
       ...input,
       reference,
-      packageNatures: naturesWithPrice
+      packageNatures: naturesWithPrice,
     }
 
     const pkg = await this.packageRepo.save(props)
-    await schedulePackageDeletion(pkg.id, new Date(pkg.departureGp.departureDate))
+    await this.jobScheduler.schedulePackageDeletion(pkg.id, new Date(pkg.departureGp.departureDate))
 
     if (input.payment && this.paymentRepo) {
       const currencyCode = pkg.departureGp.currency.code
@@ -65,8 +62,8 @@ export class CreatePackageUseCase {
       const amountXof    = ExchangeRateService.convertToXof(input.payment.amount, exchangeRate)
       await this.paymentRepo.save({
         ...input.payment,
-        packageId: pkg.id,
-        creatorId: input.creatorId,
+        packageId:  pkg.id,
+        creatorId:  input.creatorId,
         exchangeRate,
         amountXof,
       })

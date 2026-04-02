@@ -25,7 +25,7 @@ export class UpdateDepartureStatusUseCase {
   ) {}
 
   async execute(departureId: string, newState: DepartureStates): Promise<void> {
-    const row = await this.departureRepo.findWithPackages(departureId)
+    const row = await this.departureRepo.findById(departureId)
     if (!row) throw new NotFoundError(ErrorsMessages.DEPART_INTROUVABLE)
 
     const departure = new DepartureGp(row)
@@ -42,10 +42,9 @@ export class UpdateDepartureStatusUseCase {
     await this.departureRepo.updateState(departureId, newState)
 
     const packageState = DEPARTURE_TO_PACKAGE_STATE[newState]
-    if (packageState && 'packages' in row && Array.isArray((row as any).packages)) {
-      const packages = (row as any).packages as Array<{ id: string }>
+    if (packageState) {
       await Promise.all(
-        packages.map((pkg) => this.packageRepo.updateStatus(pkg.id, packageState))
+        row.packages.map((pkg) => this.packageRepo.updateStatus(pkg.id, packageState))
       )
     }
   }

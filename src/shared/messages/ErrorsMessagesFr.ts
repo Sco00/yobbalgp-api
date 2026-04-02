@@ -70,6 +70,13 @@ export enum ErrorsMessages {
   NATURE_INTROUVABLE = "Nature de colis introuvable",
   NATURE_DEJA_EXISTANTE = "Une nature existe déjà avec ce nom",
 
+  // ── Validation champs ────────────────────────────────────────────────────────
+  ROLE_OBLIGATOIRE      = "Le rôle est obligatoire",
+  ROLE_ID_INVALIDE      = "Identifiant rôle invalide",
+  RELAIS_NOM_OBLIGATOIRE     = "Le nom du relais est obligatoire",
+  RELAIS_PERSONNE_OBLIGATOIRE = "La personne est obligatoire",
+  RELAIS_ADRESSE_OBLIGATOIRE = "L'adresse est obligatoire",
+
   // ── Route / Tarif ────────────────────────────────────────────────────────────
   ROUTE_INTROUVABLE = "Route introuvable",
   TARIF_INTROUVABLE = "Tarif introuvable pour cette route",

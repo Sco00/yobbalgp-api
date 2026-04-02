@@ -2,7 +2,7 @@ import { IPersonRepository, PersonFilters } from "../../domain/repositories/IPer
 import { Person } from "@prisma/client";
 import prisma from "../config/prisma.js";
 import { Prisma } from "@prisma/client";
-import { CreatePersonProps, PersonWithRelations, PersonDetailWithRelations } from "../../domain/entities/Person/person.types.js";
+import { CreatePersonProps, PersonWithRelations, PersonListItem, PersonDetailWithRelations } from "../../domain/entities/Person/person.types.js";
 import { type RepartitionClients, type TopClientItem } from "../../domain/entities/Dashboard/dashboard.types.js";
 
 const personInclude = {
@@ -62,12 +62,12 @@ export class PrismaPersonRepository implements IPersonRepository {
     return await prisma.person.findFirst({ where: { mobile }, include: personInclude, });
   }
 
-  async findAll(filters: PersonFilters): Promise<{ props: PersonWithRelations[]; total: number }> {
-  const { personTypeId, search, hasPackages, page = 1, limit = 10 } = filters
+  async findAll(filters: PersonFilters): Promise<{ props: PersonListItem[]; total: number }> {
+    const { personTypeId, search, hasPackages, page = 1, limit = 10 } = filters
 
-  const where = {
-      personTypeId: personTypeId!,
-      ...(hasPackages && { packages: { some: {} } }),
+    const where: Prisma.PersonWhereInput = {
+      ...(personTypeId && { personTypeId }),
+      ...(hasPackages  && { packages: { some: {} } }),
       ...(search && {
         OR: [
           { firstName: { contains: search, mode: 'insensitive' as const } },
@@ -77,19 +77,43 @@ export class PrismaPersonRepository implements IPersonRepository {
       })
     }
 
-  const [props, total] = await prisma.$transaction([
-    prisma.person.findMany({
-      where,
-      include: personInclude,
-      orderBy: { createdAt: 'desc' },
-      skip:    (page - 1) * limit,
-      take:    limit,
-    }),
-    prisma.person.count({ where }),
-  ])
+    const [persons, total] = await prisma.$transaction([
+      prisma.person.findMany({
+        where,
+        include: personInclude,
+        orderBy: { createdAt: 'desc' },
+        skip:    (page - 1) * limit,
+        take:    limit,
+      }),
+      prisma.person.count({ where }),
+    ])
 
-  return { props, total }
-}
+    if (persons.length === 0) return { props: [], total }
+
+    const personIds = persons.map((p) => p.id)
+
+    const totals = await prisma.$queryRaw<{ personId: string; totalSpent: number }[]>(
+      Prisma.sql`
+        SELECT p.person_id AS "personId",
+               COALESCE(SUM(py.amount_xof), 0)::float AS "totalSpent"
+        FROM payments py
+        JOIN packages p ON py.package_id = p.id
+        WHERE py.accepted = true
+          AND py.refunded = false
+          AND p.person_id IN (${Prisma.join(personIds)})
+        GROUP BY p.person_id
+      `
+    )
+
+    const totalMap = new Map(totals.map((r) => [r.personId, r.totalSpent]))
+
+    const props: PersonListItem[] = persons.map((p) => ({
+      ...p,
+      totalSpent: totalMap.get(p.id) ?? 0,
+    }))
+
+    return { props, total }
+  }
 
   async update(id: string, props: Partial<Person>): Promise<void> {
     await prisma.person.update({
@@ -105,7 +129,7 @@ export class PrismaPersonRepository implements IPersonRepository {
   // ── Dashboard ──────────────────────────────────────────────────────────────
 
   async getTotalClients(): Promise<number> {
-    return prisma.person.count()
+    return prisma.person.count({ where: { packages: { some: {} } } })
   }
 
   async getRepartitionClients(): Promise<RepartitionClients> {

@@ -7,7 +7,7 @@ import { type JwtRefreshPayload } from "../../../shared/types/JwtPayload.js";
 import { UnauthorizedError } from "../../../shared/errors/UnauthorizedError.js";
 import { ForbiddenError } from "../../../shared/errors/ForbiddenError.js";
 import { ErrorsMessages } from "../../../shared/messages/ErrorsMessagesFr.js";
-import { SECRET_KEY } from "../../config/env.js";
+import { ENV } from "../../../shared/config/env.js";
 import { HttpStatusCode } from "../../../shared/errors/StatusCode.js";
 
 export class AuthMiddleware {
@@ -19,7 +19,7 @@ export class AuthMiddleware {
       throw new UnauthorizedError(ErrorsMessages.TOKEN_MANQUANT);
     }
 
-    const decoded = JWTService.decryptToken(token, SECRET_KEY);
+    const decoded = JWTService.decryptToken(token, ENV.JWT_SECRET);
 
     if (typeof decoded !== "object" || decoded === null || !("id" in decoded)) {
       throw new ForbiddenError(ErrorsMessages.TOKEN_INVALIDE);

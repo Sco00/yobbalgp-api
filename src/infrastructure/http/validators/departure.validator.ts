@@ -18,7 +18,7 @@ export const DepartureFiltersSchema = z.object({
   departureCountry:   z.string().optional(),
   destinationCountry: z.string().optional(),
   currencyId:         z.string().uuid().optional(),
-  isClosed:           z.coerce.boolean().optional(),
+  isClosed:           z.enum(['true', 'false']).transform((v) => v === 'true').optional(),
   departureDateFrom:  z.coerce.date().optional(),
   search:             z.string().optional(),
   page:               z.coerce.number().int().positive().default(1),

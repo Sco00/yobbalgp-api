@@ -1,9 +1,10 @@
-import { z } from 'zod'
+import { z }               from 'zod'
+import { ErrorsMessages }  from '../../../shared/messages/ErrorsMessagesFr.js'
 
 export const CreateRelaySchema = z.object({
-  name:      z.string({ error: 'Le nom du relais est obligatoire' }),
-  personId:  z.string({ error: 'La personne est obligatoire' }).uuid(),
-  addressId: z.string({ error: 'L\'adresse est obligatoire' }).uuid(),
+  name:      z.string({ error: ErrorsMessages.RELAIS_NOM_OBLIGATOIRE }),
+  personId:  z.string({ error: ErrorsMessages.RELAIS_PERSONNE_OBLIGATOIRE }).uuid(),
+  addressId: z.string({ error: ErrorsMessages.RELAIS_ADRESSE_OBLIGATOIRE }).uuid(),
 })
 
 export const UpdateRelaySchema = CreateRelaySchema.partial()
@@ -14,7 +15,7 @@ export const RelayFiltersSchema = z.object({
   region:  z.string().optional(),
   city:    z.string().optional(),
   page:    z.coerce.number().int().positive().default(1),
-  limit:   z.coerce.number().int().positive().max(100).default(20),
+  limit:   z.coerce.number().int().positive().max(100).default(10),
 })
 
 export type CreateRelayDTO  = z.infer<typeof CreateRelaySchema>

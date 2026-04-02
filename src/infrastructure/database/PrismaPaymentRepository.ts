@@ -1,19 +1,9 @@
 import { type IPaymentRepository, type PaymentFilters } from '../../domain/repositories/IPaymentRepository.js'
-import { type PaymentWithRelations, type CreatePaymentProps } from '../../domain/entities/Payment/payment.types.js'
+import { type PaymentWithRelations, type PaymentListItem, paymentInclude, paymentListInclude, type CreatePaymentProps } from '../../domain/entities/Payment/payment.types.js'
 import { type CaMensuelItem } from '../../domain/entities/Dashboard/dashboard.types.js'
 import prisma from '../config/prisma.js'
 import { Prisma } from '@prisma/client'
 
-const paymentInclude = {
-  currency:      true,
-  paymentMethod: true,
-  package: {
-    include: {
-      person:  true,
-      natures: { include: { nature: true } },
-    },
-  },
-} satisfies Parameters<typeof prisma.payment.findUnique>[0]['include']
 
 export class PrismaPaymentRepository implements IPaymentRepository {
 
@@ -50,19 +40,21 @@ export class PrismaPaymentRepository implements IPaymentRepository {
     })
   }
 
-  async findAll(filters: PaymentFilters = {}): Promise<{ props: PaymentWithRelations[]; total: number }> {
-    const { accepted, refunded, currencyId, page = 1, limit = 20 } = filters
+  async findAll(filters: PaymentFilters = {}): Promise<{ props: PaymentListItem[]; total: number }> {
+    const { accepted, refunded, currencyId, paymentMethodId, createdAtFrom, page = 1, limit = 10 } = filters
 
     const where = {
-      ...(accepted   !== undefined && { accepted }),
-      ...(refunded   !== undefined && { refunded }),
-      ...(currencyId !== undefined && { currencyId }),
+      ...(accepted         !== undefined && { accepted }),
+      ...(refunded         !== undefined && { refunded }),
+      ...(currencyId       !== undefined && { currencyId }),
+      ...(paymentMethodId  !== undefined && { paymentMethodId }),
+      ...(createdAtFrom    !== undefined && { createdAt: { gte: createdAtFrom } }),
     }
 
     const [data, total] = await prisma.$transaction([
       prisma.payment.findMany({
         where,
-        include: paymentInclude,
+        include: paymentListInclude,
         orderBy: { createdAt: 'desc' },
         skip:    (page - 1) * limit,
         take:    limit,

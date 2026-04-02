@@ -1,15 +1,11 @@
-import { type IPaymentRepository } from '../../domain/repositories/IPaymentRepository.js'
-import { type IPackageRepository } from '../../domain/repositories/IPackageRepository.js'
-import { type PaymentWithRelations } from '../../domain/entities/Payment/payment.types.js'
-import { type CreatePaymentDTO } from '../../infrastructure/http/validators/payment.validator.js'
-import { ExchangeRateService } from '../../shared/services/ExchangeRateService.js'
-import { NotFoundError } from '../../shared/errors/NotFoundError.js'
-import { ValidationError } from '../../shared/errors/BadRequestError.js'
-import { ErrorsMessages } from '../../shared/messages/ErrorsMessagesFr.js'
-
-interface CreatePaymentInput extends CreatePaymentDTO {
-  creatorId: string
-}
+import { type IPaymentRepository }    from '../../domain/repositories/IPaymentRepository.js'
+import { type IPackageRepository }    from '../../domain/repositories/IPackageRepository.js'
+import { type PaymentWithRelations }  from '../../domain/entities/Payment/payment.types.js'
+import { type CreatePaymentInput }    from '../dtos/payment.dtos.js'
+import { ExchangeRateService }        from '../../shared/services/ExchangeRateService.js'
+import { NotFoundError }              from '../../shared/errors/NotFoundError.js'
+import { ValidationError }            from '../../shared/errors/BadRequestError.js'
+import { ErrorsMessages }             from '../../shared/messages/ErrorsMessagesFr.js'
 
 export class CreatePaymentUseCase {
   constructor(
@@ -31,13 +27,12 @@ export class CreatePaymentUseCase {
     ])
 
     const amountXof    = ExchangeRateService.convertToXof(input.amount, rateToXof)
-    const exchangeRate = rateToCurrency  // 1 EUR = X {devisePaiement}
+    const exchangeRate = rateToCurrency
 
-    // 6. Persister
     return await this.paymentRepo.save({
       ...input,
       exchangeRate,
-      amountXof
+      amountXof,
     })
   }
 }

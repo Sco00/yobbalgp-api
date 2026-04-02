@@ -15,7 +15,7 @@ export const PersonFiltersSchema = z.object({
   personTypeId: z.uuid().optional(),
   hasPackages:  z.coerce.boolean().optional(),
   page:         z.coerce.number().int().positive().default(1),
-  limit:        z.coerce.number().int().positive().max(100).default(20),
+  limit:        z.coerce.number().int().positive().max(100).default(10),
 })
 
 export type CreatePersonDTO    = z.infer<typeof CreatePersonSchema>

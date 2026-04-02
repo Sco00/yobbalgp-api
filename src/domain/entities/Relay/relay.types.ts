@@ -1,5 +1,5 @@
 import { type Prisma } from '@prisma/client'
-import { type CreateRelayDTO } from '../../../infrastructure/http/validators/relay.validator.js'
+import { type CreateRelayInput } from '../../../application/dtos/relay.dtos.js'
 
 export type RelayWithRelations = Prisma.RelayGetPayload<{
   include: {
@@ -13,7 +13,7 @@ export type RelayWithRelations = Prisma.RelayGetPayload<{
 
 export type RelayDetailWithRelations = Prisma.RelayGetPayload<{
   include: {
-    person:  true
+    person:  { include: { personType: true } }
     address: true
     _count: {
       select: { packages: true }
@@ -30,4 +30,4 @@ export type RelayDetailWithRelations = Prisma.RelayGetPayload<{
   }
 }>
 
-export type CreateRelayProps = CreateRelayDTO
+export type CreateRelayProps = CreateRelayInput

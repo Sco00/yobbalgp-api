@@ -1,12 +1,11 @@
-import { type Relay as PrismaRelay } from '@prisma/client'
 import { type CreateRelayProps, type RelayWithRelations } from './relay.types.js'
 
 export class Relay {
   id?:       string
-  name:      PrismaRelay['name']
-  addressId: PrismaRelay['addressId']
-  personId:  PrismaRelay['personId']
-  createdAt?: PrismaRelay['createdAt']
+  name:      string
+  addressId: string
+  personId:  string
+  createdAt?: Date
 
   person?:  RelayWithRelations['person']
   address?: RelayWithRelations['address']

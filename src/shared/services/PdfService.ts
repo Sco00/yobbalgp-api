@@ -1,13 +1,14 @@
-import { PdfRenderer }                      from '../../infrastructure/pdf/PdfRenderer.js'
-import { type InvoiceData, type QuoteData } from '../../infrastructure/pdf/types/pdf.types.js'
+import { type IPdfRenderer }             from './IPdfRenderer.js'
+import { type InvoiceData, type QuoteData } from '../types/PdfTypes.js'
 
 export class PdfService {
+  constructor(private readonly renderer: IPdfRenderer) {}
 
-  static async generateInvoice(data: InvoiceData): Promise<Buffer> {
-    return PdfRenderer.renderInvoice(data)
+  async generateInvoice(data: InvoiceData): Promise<Buffer> {
+    return this.renderer.renderInvoice(data)
   }
 
-  static async generateQuote(data: QuoteData): Promise<Buffer> {
-    return PdfRenderer.renderQuote(data)
+  async generateQuote(data: QuoteData): Promise<Buffer> {
+    return this.renderer.renderQuote(data)
   }
 }

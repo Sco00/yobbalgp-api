@@ -1,10 +1,11 @@
 import { Prisma } from "@prisma/client";
-import { CreateAccountDTO } from "../../../infrastructure/http/validators/account.validator.js";
+import { type CreateAccountInput } from "../../../application/dtos/account.dtos.js";
+
 export type AccountWithRelations = Prisma.AccountGetPayload<{
   include: {
-    role: true;
+    role:   true;
     person: true;
   };
 }>;
 
-export type CreateAccountProps = CreateAccountDTO & {personId: string}
+export type CreateAccountProps = CreateAccountInput

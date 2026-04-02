@@ -14,8 +14,8 @@ export const CreateAccountSchema = z.object({
               .email("Format email invalide"),
   password: z.string({ error: ErrorsMessages.MOT_DE_PASSE_OBLIGATOIRE })
               .min(8, ErrorsMessages.MOT_DE_PASSE_TROP_COURT),
-  roleId:   z.string({ error: "Le rôle est obligatoire" })
-              .uuid("Identifiant rôle invalide"),
+  roleId:   z.string({ error: ErrorsMessages.ROLE_OBLIGATOIRE })
+              .uuid(ErrorsMessages.ROLE_ID_INVALIDE),
 
   // Soit personId existant, soit infos pour créer la personne
   personId: z.string().uuid().optional(),

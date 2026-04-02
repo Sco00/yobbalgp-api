@@ -1,15 +1,19 @@
 import { Request, Response, NextFunction } from 'express'
 import {CreatePackageSchema, UpdatePackageStatusSchema, PackageFiltersSchema, PackageNatureSchema,} from '../validators/package.validators.js'
 import { container } from '../../config/container.js'
-import { ResponseFormatter } from '../middlewares/ReponseFormatter.js';
+import { ResponseFormatter } from '../middlewares/ResponseFormatter.js';
 import { SuccessMessages } from '../../../shared/messages/SuccessMessagesFr.js';
 import { HttpStatusCode } from '../../../shared/errors/StatusCode.js';
 
 export class PackageController {
 
-    create = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-            const dto = CreatePackageSchema.parse(req.body);
-            const result = await container.createPackageUseCase.execute({ ...dto, creatorId: req.user!.id });
+    create = async (req: Request, res: Response): Promise<void> => {
+            const dto = CreatePackageSchema.parse(req.body)
+            const result = await container.createPackageUseCase.execute({
+              ...dto,
+              relayId:   dto.relayId ?? null,
+              creatorId: req.user!.id,
+            })
             ResponseFormatter.success(res, result, SuccessMessages.COLIS_CREE, HttpStatusCode.CREATED)
     }
 
@@ -43,15 +47,15 @@ export class PackageController {
     addNature = async (req: Request, res: Response): Promise<void> => {
         const dto = PackageNatureSchema.parse(req.body)
         await container.addNatureToPackageUseCase.execute(req.params.id as string, dto)
-        res.status(201).json({ success: true, message: SuccessMessages.COLIS_MODIFIE, data: null })
+        ResponseFormatter.success(res, null, SuccessMessages.COLIS_MODIFIE, HttpStatusCode.CREATED)
     }
 
     removeNature = async (req: Request, res: Response): Promise<void> => {
         await container.removeNatureFromPackageUseCase.execute(
-        req.params.id as string,
-        req.params.natureId as string
+          req.params.id as string,
+          req.params.natureId as string,
         )
-        res.json({ success: true, message: SuccessMessages.COLIS_MODIFIE, data: null })
+        ResponseFormatter.success(res, null, SuccessMessages.COLIS_MODIFIE)
     }
 
     quote = async (req: Request, res: Response): Promise<void> => {

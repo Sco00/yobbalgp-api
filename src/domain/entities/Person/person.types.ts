@@ -1,5 +1,5 @@
 import { type Prisma } from '@prisma/client'
-import { type CreatePersonDTO } from '../../../infrastructure/http/validators/person.validator.js'
+import { type CreatePersonInput } from '../../../application/dtos/person.dtos.js'
 
 export type PersonWithRelations = Prisma.PersonGetPayload<{
   include: {
@@ -7,6 +7,8 @@ export type PersonWithRelations = Prisma.PersonGetPayload<{
     _count: { select: { packages: true } }
   }
 }>
+
+export type PersonListItem = PersonWithRelations & { totalSpent: number }
 
 export type PersonDetailWithRelations = Prisma.PersonGetPayload<{
   include: {
@@ -31,4 +33,4 @@ export type PersonDetailWithRelations = Prisma.PersonGetPayload<{
   }
 }>
 
-export type CreatePersonProps = CreatePersonDTO
+export type CreatePersonProps = CreatePersonInput
