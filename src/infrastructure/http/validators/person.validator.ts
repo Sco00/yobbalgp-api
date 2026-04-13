@@ -1,9 +1,14 @@
 import { z } from 'zod'
+import { validatePhoneNumber } from '../../../shared/utils/phone.utils.js'
 
 export const CreatePersonSchema = z.object({
   firstName:    z.string({ error: "Le prénom est obligatoire" }),
   lastName:     z.string({ error: "Le nom est obligatoire" }),
-  mobile:       z.string(),
+  mobile:       z.string({ error: "Le numéro de téléphone est obligatoire" })
+                  .refine(
+                    (val) => validatePhoneNumber(val),
+                    { message: "Le numéro de téléphone est invalide. Utilisez le format international (ex: +221771234567)" }
+                  ),
   personTypeId: z.string({ error: "Le type de personne est obligatoire" })
                   .uuid("Identifiant type de personne invalide"),
 })
