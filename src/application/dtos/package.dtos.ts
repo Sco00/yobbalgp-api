@@ -9,6 +9,8 @@ export interface PackagePaymentInput {
 
 export interface CreatePackageInput {
   weight:          number
+  recipientName:   string
+  recipientPhone:  string
   departureGpId:   string
   personId:        string
   relayId?:        string | null | undefined

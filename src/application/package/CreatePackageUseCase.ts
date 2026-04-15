@@ -2,6 +2,7 @@ import { type IPackageRepository }    from '../../domain/repositories/IPackageRe
 import { type IDepartureRepository }  from '../../domain/repositories/IDepartureRepository.js'
 import { type IPaymentRepository }    from '../../domain/repositories/IPaymentRepository.js'
 import { type INatureRepository }     from '../../domain/repositories/INatureRepository.js'
+import { type IPersonRepository }     from '../../domain/repositories/IPersonRepository.js'
 import { type IJobScheduler }         from '../services/IJobScheduler.js'
 import { type CreatePackageInput }    from '../dtos/package.dtos.js'
 import { type CreatePackageProps, type PackageWithRelations } from '../../domain/entities/Package/package.types.js'
@@ -18,9 +19,16 @@ export class CreatePackageUseCase {
     private readonly natureRepo:    INatureRepository,
     private readonly jobScheduler:  IJobScheduler,
     private readonly paymentRepo?:  IPaymentRepository,
+    private readonly personRepo?:   IPersonRepository,
   ) {}
 
   async execute(input: CreatePackageInput): Promise<PackageWithRelations> {
+    const person = await this.personRepo?.findById(input.personId)
+    if (!person) throw new NotFoundError(ErrorsMessages.PERSON_INTROUVABLE)
+    if (input.recipientPhone === person.mobile) {
+      throw new ValidationError("Le destinataire ne peut pas être l'expéditeur")
+    }
+
     const departure = await this.departureRepo.findById(input.departureGpId)
     if (!departure) {
       throw new NotFoundError(ErrorsMessages.DEPART_INTROUVABLE)

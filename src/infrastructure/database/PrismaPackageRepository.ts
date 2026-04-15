@@ -10,12 +10,14 @@ export class PrismaPackageRepository implements IPackageRepository {
   async save(props: CreatePackageProps): Promise<PackageWithRelations> {
     return await prisma.package.create({
       data: {
-        reference:     props.reference!,
-        weight:        props.weight,
-        creatorId:     props.creatorId,
-        personId:      props.personId,
-        relayId:       props.relayId ?? null,
-        departureGpId: props.departureGpId,
+        reference:      props.reference!,
+        weight:         props.weight,
+        recipientName:  props.recipientName,
+        recipientPhone: props.recipientPhone,
+        creatorId:      props.creatorId,
+        personId:       props.personId,
+        relayId:        props.relayId ?? null,
+        departureGpId:  props.departureGpId,
         natures: {
           create: props.packageNatures.map(n => ({
             natureId: n.natureId,

@@ -141,17 +141,19 @@ model Nature {
 }
 
 model Package {
-  id            String       @id @default(uuid())
-  reference     String       @unique
-  weight        Float
-  isCompleted   Boolean      @default(false) @map("is_completed")
-  isArchived    Boolean      @default(false) @map("is_archived")
-  currentState  PackageState @default(EN_ATTENTE) @map("current_state")
-  creatorId     String       @map("creator_id")
-  personId      String       @map("person_id")
-  relayId       String?      @map("relay_id")
-  departureGpId String       @map("departure_gp_id")
-  createdAt     DateTime     @default(now()) @map("created_at")
+  id             String       @id @default(uuid())
+  reference      String       @unique
+  weight         Float
+  recipientName  String       @map("recipient_name")
+  recipientPhone String       @map("recipient_phone")
+  isCompleted    Boolean      @default(false) @map("is_completed")
+  isArchived     Boolean      @default(false) @map("is_archived")
+  currentState   PackageState @default(EN_ATTENTE) @map("current_state")
+  creatorId      String       @map("creator_id")
+  personId       String       @map("person_id")
+  relayId        String?      @map("relay_id")
+  departureGpId  String       @map("departure_gp_id")
+  createdAt      DateTime     @default(now()) @map("created_at")
 
   creator     Account     @relation("PackageCreator", fields: [creatorId], references: [id])
   person      Person      @relation("PackageOwner", fields: [personId], references: [id])

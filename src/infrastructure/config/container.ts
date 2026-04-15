@@ -80,7 +80,7 @@ const paymentMethodRepository = new PrismaPaymentMethodRepository();
 const roleRepository = new PrismaRoleRepository();
 
 // ── Package Use Cases
-const createPackageUseCase = new CreatePackageUseCase(packageRepository,departureRepository,natureRepository,jobScheduler,paymentRepository,);
+const createPackageUseCase = new CreatePackageUseCase(packageRepository,departureRepository,natureRepository,jobScheduler,paymentRepository,personRepository,);
 const listPackagesUseCase = new ListPackagesUseCase(packageRepository);
 const getPackageByIdUseCase = new GetPackageByIdUseCase(packageRepository);
 const updatePackageStatusUseCase = new UpdatePackageStatusUseCase(packageRepository,departureRepository,);

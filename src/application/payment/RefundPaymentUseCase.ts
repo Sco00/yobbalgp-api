@@ -12,6 +12,9 @@ export class RefundPaymentUseCase {
     if (!row) throw new NotFoundError(ErrorsMessages.PAIEMENT_INTROUVABLE)
 
     const payment = new Payment(row)
+    if (!payment.accepted) {
+      throw new ValidationError(ErrorsMessages.PAIEMENT_NON_ACCEPTE)
+    }
     if (!payment.canBeRefunded()) {
       throw new ValidationError(ErrorsMessages.PAIEMENT_DEJA_REMBOURSE)
     }

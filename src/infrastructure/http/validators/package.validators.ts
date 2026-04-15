@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { PackageStates } from '../../../domain/enums/PackageStates.js'
+import { validatePhoneNumber } from '../../../shared/utils/phone.utils.js'
 
 export const PackageNatureSchema = z.object({
   natureId: z.string().uuid(),
@@ -16,12 +17,18 @@ const PaymentInputSchema = z.object({
 })
 
 export const CreatePackageSchema = z.object({
-  weight:        z.number({ error: "Le poids est obligatoire" })
-                  .positive("Le poids doit être supérieur à 0"),
-  departureGpId: z.string({ error: "Le départ GP est obligatoire" })
-                  .uuid("L'identifiant du départ GP est invalide"),
-  personId:      z.string({ error: "Le client est obligatoire" })
-                  .uuid("L'identifiant du client est invalide"),
+  weight:         z.number({ error: "Le poids est obligatoire" })
+                   .positive("Le poids doit être supérieur à 0"),
+  recipientName:  z.string({ error: "Le nom du destinataire est obligatoire" }),
+  recipientPhone: z.string({ error: "Le téléphone du destinataire est obligatoire" })
+                   .refine(
+                     (val) => validatePhoneNumber(val),
+                     { message: "Le numéro du destinataire est invalide. Utilisez le format international (ex: +221771234567)" }
+                   ),
+  departureGpId:  z.string({ error: "Le départ GP est obligatoire" })
+                   .uuid("L'identifiant du départ GP est invalide"),
+  personId:       z.string({ error: "Le client est obligatoire" })
+                   .uuid("L'identifiant du client est invalide"),
   relayId:       z.string().uuid("L'identifiant du relais est invalide")
                   .nullable().optional(),
   packageNatures: z.array(PackageNatureSchema, { error: "Les natures sont obligatoires" })

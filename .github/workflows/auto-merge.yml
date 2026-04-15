@@ -1,0 +1,36 @@
+name: Auto-merge develop → main
+
+on:
+  workflow_run:
+    workflows: ["CI — YobbalGP V2"]
+    branches: [develop]
+    types: [completed]
+
+jobs:
+  merge:
+    name: Squash merge develop → main
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Squash merge develop into main
+        run: |
+          git checkout main
+          git pull origin main
+          git merge --squash origin/develop
+          git commit -m "chore: squash merge develop → main [CI auto-merge]"
+          git push origin main
