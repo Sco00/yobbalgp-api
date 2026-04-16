@@ -14,10 +14,13 @@ import { AuthMiddleware } from "../middlewares/AuthMiddleware.js"
 
 const router = express.Router()
 
+router.get('/', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 router.use("/auth", authRoutes)
 
-AuthMiddleware.authenticate;
-    console.log("ok");
+router.use(AuthMiddleware.authenticate)
 
 router.use("/accounts", accountRoutes)
 router.use("/packages", packageRoutes)
