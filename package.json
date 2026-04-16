@@ -9,7 +9,8 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "dev": "nodemon --exec tsx src/infrastructure/http/server.ts",
-    "build": "tsc -w",
+    "build": "tsc",
+    "start": "node dist/infrastructure/http/server.js",
     "seed": "tsx prisma/seeds.ts"
   },
   "author": "",
