@@ -1,5 +1,4 @@
 import { Router } from 'express'
-import { AuthController } from '../controllers/AuthController.js'
 import { container } from '../../config/container.js'
 
 

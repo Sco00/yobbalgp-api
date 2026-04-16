@@ -248,6 +248,7 @@ async function main() {
       where: { reference: 'YBL-2024-001' }, update: {},
       create: {
         reference: 'YBL-2024-001', weight: 5.0, currentState: PackageState.LIVRE, isCompleted: true,
+        recipientName: 'Fatou Ndiaye', recipientPhone: '+221771234567',
         personId: personClient1.id, creatorId: accountAdmin.id, departureGpId: dep1.id,
         natures:  { create: [{ natureId: natureVetements.id, quantity: 3, price: 7.5 }, { natureId: natureAlim.id, quantity: 2, price: 3.0 }] },
         statuses: { create: [{ state: PackageState.EN_ATTENTE }, { state: PackageState.EN_TRANSIT }, { state: PackageState.ARRIVE }, { state: PackageState.LIVRE }] },
@@ -257,6 +258,7 @@ async function main() {
       where: { reference: 'YBL-2024-002' }, update: {},
       create: {
         reference: 'YBL-2024-002', weight: 3.5, currentState: PackageState.LIVRE, isCompleted: true,
+        recipientName: 'Ibrahim Sow', recipientPhone: '+221779876543',
         personId: personClient2.id, creatorId: accountAdmin.id, departureGpId: dep1.id, relayId: relay.id,
         natures:  { create: [{ natureId: natureElectro.id, quantity: 1, price: 6.0 }] },
         statuses: { create: [{ state: PackageState.EN_ATTENTE }, { state: PackageState.EN_TRANSIT }, { state: PackageState.ARRIVE }, { state: PackageState.LIVRE }] },
@@ -268,6 +270,7 @@ async function main() {
       where: { reference: 'YBL-2025-001' }, update: {},
       create: {
         reference: 'YBL-2025-001', weight: 7.0, currentState: PackageState.LIVRE, isCompleted: true,
+        recipientName: 'Aminata Camara', recipientPhone: '+221772345678',
         personId: personClient3.id, creatorId: accountAdmin.id, departureGpId: dep2.id,
         natures:  { create: [{ natureId: natureCosmetique.id, quantity: 4, price: 12.0 }, { natureId: natureAlim.id, quantity: 3, price: 4.5 }] },
         statuses: { create: [{ state: PackageState.EN_ATTENTE }, { state: PackageState.EN_TRANSIT }, { state: PackageState.ARRIVE }, { state: PackageState.LIVRE }] },
@@ -277,6 +280,7 @@ async function main() {
       where: { reference: 'YBL-2025-002' }, update: {},
       create: {
         reference: 'YBL-2025-002', weight: 4.0, currentState: PackageState.LIVRE, isCompleted: true,
+        recipientName: 'Fatou Ndiaye', recipientPhone: '+221771234567',
         personId: personClient1.id, creatorId: accountAdmin.id, departureGpId: dep2.id,
         natures:  { create: [{ natureId: natureVetements.id, quantity: 5, price: 12.5 }] },
         statuses: { create: [{ state: PackageState.EN_ATTENTE }, { state: PackageState.EN_TRANSIT }, { state: PackageState.ARRIVE }, { state: PackageState.LIVRE }] },
@@ -288,6 +292,7 @@ async function main() {
       where: { reference: 'YBL-2025-003' }, update: {},
       create: {
         reference: 'YBL-2025-003', weight: 8.0, currentState: PackageState.ARRIVE,
+        recipientName: 'Fatou Ndiaye', recipientPhone: '+221771234567',
         personId: personClient1.id, creatorId: accountAdmin.id, departureGpId: dep3.id,
         natures:  { create: [{ natureId: natureVetements.id, quantity: 5, price: 12.5 }, { natureId: natureElectro.id, quantity: 1, price: 6.0 }] },
         statuses: { create: [{ state: PackageState.EN_ATTENTE }, { state: PackageState.EN_TRANSIT }, { state: PackageState.ARRIVE }] },
@@ -297,6 +302,7 @@ async function main() {
       where: { reference: 'YBL-2025-004' }, update: {},
       create: {
         reference: 'YBL-2025-004', weight: 3.0, currentState: PackageState.ARRIVE,
+        recipientName: 'Ibrahim Sow', recipientPhone: '+221779876543',
         personId: personClient2.id, creatorId: accountAdmin.id, departureGpId: dep3.id, relayId: relay.id,
         natures:  { create: [{ natureId: natureMedicament.id, quantity: 2, price: 8.0 }] },
         statuses: { create: [{ state: PackageState.EN_ATTENTE }, { state: PackageState.EN_TRANSIT }, { state: PackageState.ARRIVE }] },
@@ -308,6 +314,7 @@ async function main() {
       where: { reference: 'YBL-2026-001' }, update: {},
       create: {
         reference: 'YBL-2026-001', weight: 6.0, currentState: PackageState.ARRIVE,
+        recipientName: 'Aminata Camara', recipientPhone: '+221772345678',
         personId: personClient3.id, creatorId: accountAdmin.id, departureGpId: dep4.id,
         natures:  { create: [{ natureId: natureElectro.id, quantity: 2, price: 12.0 }, { natureId: natureCosmetique.id, quantity: 1, price: 3.0 }] },
         statuses: { create: [{ state: PackageState.EN_ATTENTE }, { state: PackageState.EN_TRANSIT }, { state: PackageState.ARRIVE }] },
@@ -317,6 +324,7 @@ async function main() {
       where: { reference: 'YBL-2026-002' }, update: {},
       create: {
         reference: 'YBL-2026-002', weight: 5.5, currentState: PackageState.ARRIVE,
+        recipientName: 'Fatou Ndiaye', recipientPhone: '+221771234567',
         personId: personClient1.id, creatorId: accountAdmin.id, departureGpId: dep4.id,
         natures:  { create: [{ natureId: natureAlim.id, quantity: 6, price: 9.0 }, { natureId: natureVetements.id, quantity: 2, price: 5.0 }] },
         statuses: { create: [{ state: PackageState.EN_ATTENTE }, { state: PackageState.EN_TRANSIT }, { state: PackageState.ARRIVE }] },
@@ -326,6 +334,7 @@ async function main() {
       where: { reference: 'YBL-2026-003' }, update: {},
       create: {
         reference: 'YBL-2026-003', weight: 2.5, currentState: PackageState.ARRIVE,
+        recipientName: 'Ibrahim Sow', recipientPhone: '+221779876543',
         personId: personClient2.id, creatorId: accountAdmin.id, departureGpId: dep4.id, relayId: relay.id,
         natures:  { create: [{ natureId: natureMedicament.id, quantity: 1, price: 4.0 }, { natureId: natureCosmetique.id, quantity: 2, price: 6.0 }] },
         statuses: { create: [{ state: PackageState.EN_ATTENTE }, { state: PackageState.EN_TRANSIT }, { state: PackageState.ARRIVE }] },

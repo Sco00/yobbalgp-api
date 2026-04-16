@@ -10,18 +10,23 @@ import { relayRoutes }     from './relay.routes.js'
 import { dashboardRoutes } from './dashboard.routes.js'
 import { referenceRoutes }  from './reference.routes.js'
 import { addressRoutes }    from './address.routes.js'
+import { AuthMiddleware } from "../middlewares/AuthMiddleware.js"
 
 const router = express.Router()
 
-router.use("/accounts",   accountRoutes)
-router.use("/packages",   packageRoutes)
-router.use("/persons",    personRoutes)
+router.use("/auth", authRoutes)
+
+AuthMiddleware.authenticate;
+    console.log("ok");
+
+router.use("/accounts", accountRoutes)
+router.use("/packages", packageRoutes)
+router.use("/persons", personRoutes)
 router.use("/departures", departureRoutes)
-router.use("/payments",   paymentRoutes)
-router.use("/auth",       authRoutes)
-router.use('/relays',     relayRoutes)
-router.use('/dashboard',  dashboardRoutes)
-router.use('/ref',        referenceRoutes)
-router.use('/addresses',  addressRoutes)
+router.use("/payments", paymentRoutes)
+router.use('/relays', relayRoutes)
+router.use('/dashboard', dashboardRoutes)
+router.use('/ref', referenceRoutes)
+router.use('/addresses', addressRoutes)
 
 export default router

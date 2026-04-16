@@ -4,12 +4,13 @@ import { AuthMiddleware } from '../middlewares/AuthMiddleware.js'
 
 const router = Router()
 
-router.use(AuthMiddleware.authenticate) 
+// router.use(AuthMiddleware.authorizeClient);
+router.get('/', container.departureController.list)
+router.get('/:id',container.departureController.getById)
 
-router.get('/', AuthMiddleware.authorizeClient, container.departureController.list)
-router.get('/:id', AuthMiddleware.authorizeClient,container.departureController.getById)
-router.post('/', AuthMiddleware.authorizeAdmin,  container.departureController.create)
-router.patch('/:id/close', AuthMiddleware.authorizeAdmin, container.departureController.close)
-router.patch('/:id/state', AuthMiddleware.authorizeAdmin, container.departureController.updateState)
+// router.use(AuthMiddleware.authorizeAdmin);
+router.post('/', container.departureController.create)
+router.patch('/:id/close', container.departureController.close)
+router.patch('/:id/state', container.departureController.updateState)
 
 export { router as departureRoutes }

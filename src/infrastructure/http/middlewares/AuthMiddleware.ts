@@ -14,7 +14,7 @@ export class AuthMiddleware {
   static authenticate(req: Request, _res: Response, next: NextFunction): void {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
-
+    
     if (!token) {
       throw new UnauthorizedError(ErrorsMessages.TOKEN_MANQUANT);
     }
